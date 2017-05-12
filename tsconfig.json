@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": ["es2015"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "noImplicitUseStrict": false,
+        "noLib": false,
+        "outDir" : "dist",
+        "removeComments": true,
+        "rootDir": "src",
+        "suppressImplicitAnyIndexErrors": true,
+        "target": "es5"
+    }
+}

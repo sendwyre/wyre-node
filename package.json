@@ -1,0 +1,33 @@
+{
+  "name": "wyre-api",
+  "version": "1.0.0",
+  "description": "Node.js client library for the Wyre API.",
+  "main": "./dist/wyre.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snapcard/wyre-node.git"
+  },
+  "keywords": [
+    "wyre",
+    "exchange",
+    "api"
+  ],
+  "files": [
+    "dist/"
+  ],
+  "author": "Wyre",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/snapcard/wyre-node/issues"
+  },
+  "types": "./dist/wyre.d.ts",
+  "dependencies": {
+    "es6-shim": "0.35.3",
+    "request": "2.81.0"
+  },
+  "devDependencies": {
+    "@types/request": "0.0.43",
+    "typescript": "2.3.2"
+  }
+}
