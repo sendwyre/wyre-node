@@ -14,12 +14,12 @@ Usage
 -----
 
 ```js
-var WyreClient = require('wyre-api').WyreClient;
+const WyreClient = require('wyre-api').WyreClient
 
-var wyre = new WyreClient({
+let wyre = new WyreClient({
     apiKey: "P334FCDXQ4UVAWVPUZ4V",
     secretKey: "4AZEWMYB7CFJWWZMCEWX"
-});
+})
 
 wyre.get("account")
     .then(function(data) {
@@ -27,39 +27,39 @@ wyre.get("account")
     },
     function(err) {
         // .. error
-    });
+    })
 
 wyre.get("transfers", {
     limit: 1,
     offset: 1
 })
-    .then(successCallback, errorCallback);
+    .then(successCallback, errorCallback)
 
 wyre.post("transfers", {
     sourceAmount: "10",
     sourceCurrency: "USD",
     dest: "email:test@sendwyre.com"
 })
-    .then(successCallback, errorCallback);
+    .then(successCallback, errorCallback)
 ```
 
-Ability to override options used by the [Request](https://github.com/request/request) client on both constructor and per invocation:
+Ability to override options used by the [Request](https://github.com/request/request) client on both constructor and per request:
 
 ```js
-var wyre = new WyreClient({
+let wyre = new WyreClient({
     apiKey: "P334FCDXQ4UVAWVPUZ4V",
     secretKey: "4AZEWMYB7CFJWWZMCEWX",
     options: {
         timeout: 1500
     }
-});
+})
 ```
 
 ```js
 wyre.get("rates", {}, {
     timeout: 1500
 })
-    .then(successCallback, errorCallback);
+    .then(successCallback, errorCallback)
 ```
 
 Import statement
