@@ -37,7 +37,7 @@ export class WyreClient {
             request(requestOptions, (err, res) => {
                 if(err)
                     throw err
-                else if(("" + res.statusCode).match(/^2\d\d$/))
+                if(("" + res.statusCode).match(/^2\d\d$/))
                     resolve(res.body || {})
                 else
                     reject(res.body)
@@ -65,7 +65,6 @@ export class WyreClient {
             requestOptions.body = params
 
         requestOptions.headers["X-Api-Signature"] = this.buildSignature(requestOptions)
-
         requestOptions = Object.assign(requestOptions, this.config.options)
         requestOptions = Object.assign(requestOptions, options)
 
@@ -77,7 +76,7 @@ export class WyreClient {
         if(requestOptions.body)
             url += JSON.stringify(requestOptions.body)
         return crypto.createHmac("sha256", this.config.secretKey)
-            .update(url.toString())
+            .update(url)
             .digest("hex")
     }
 }

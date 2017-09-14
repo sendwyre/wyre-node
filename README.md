@@ -22,10 +22,10 @@ let wyre = new WyreClient({
 })
 
 wyre.get("account")
-    .then(function(data) {
+    .then(data => {
         // .. success
     },
-    function(err) {
+    err => {
         // .. error
     })
 

@@ -33,7 +33,7 @@ var WyreClient = (function () {
             request(requestOptions, function (err, res) {
                 if (err)
                     throw err;
-                else if (("" + res.statusCode).match(/^2\d\d$/))
+                if (("" + res.statusCode).match(/^2\d\d$/))
                     resolve(res.body || {});
                 else
                     reject(res.body);
@@ -67,7 +67,7 @@ var WyreClient = (function () {
         if (requestOptions.body)
             url += JSON.stringify(requestOptions.body);
         return crypto.createHmac("sha256", this.config.secretKey)
-            .update(url.toString())
+            .update(url)
             .digest("hex");
     };
     return WyreClient;
