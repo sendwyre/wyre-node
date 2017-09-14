@@ -6,7 +6,7 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/snapcard/wyre-node.git"
+    "url": "https://github.com/sendwyre/wyre-node.git"
   },
   "keywords": [
     "wyre",
@@ -19,7 +19,7 @@
   "author": "Wyre",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/snapcard/wyre-node/issues"
+    "url": "https://github.com/sendwyre/wyre-node/issues"
   },
   "types": "./dist/wyre.d.ts",
   "dependencies": {
@@ -27,7 +27,7 @@
     "request": "2.81.0"
   },
   "devDependencies": {
-    "@types/request": "0.0.43",
-    "typescript": "2.3.2"
+    "@types/request": "2.0.3",
+    "typescript": "2.5.2"
   }
 }
