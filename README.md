@@ -15,13 +15,14 @@ Usage
 
 ```js
 const WyreClient = require('wyre-api').WyreClient
+// import {WyreClient} from 'wyre-api'
 
 let wyre = new WyreClient({
     apiKey: "P334FCDXQ4UVAWVPUZ4V",
     secretKey: "4AZEWMYB7CFJWWZMCEWX"
 })
 
-wyre.get("account")
+wyre.get("/account")
     .then(data => {
         // .. success
     },
@@ -29,13 +30,13 @@ wyre.get("account")
         // .. error
     })
 
-wyre.get("transfers", {
+wyre.get("/transfers", {
     limit: 1,
     offset: 1
 })
     .then(successCallback, errorCallback)
 
-wyre.post("transfers", {
+wyre.post("/transfers", {
     sourceAmount: "10",
     sourceCurrency: "USD",
     dest: "email:test@sendwyre.com"
@@ -56,16 +57,10 @@ let wyre = new WyreClient({
 ```
 
 ```js
-wyre.get("rates", {}, {
+wyre.get("/rates", {}, {
     timeout: 1500
 })
     .then(successCallback, errorCallback)
-```
-
-Import statement
-
-```typescript
-import {WyreClient} from 'wyre-api'
 ```
 
 Errors
