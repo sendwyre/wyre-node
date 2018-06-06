@@ -1,7 +1,7 @@
 Wyre
 ====
 
-Node.js client library for the [Wyre API](https://docs.sendwyre.com/).
+Node.js client library for the [Wyre API](https://www.sendwyre.com/docs/).
 
 Install
 -------
