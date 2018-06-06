@@ -24,10 +24,10 @@
   "types": "./dist/wyre.d.ts",
   "dependencies": {
     "es6-shim": "0.35.3",
-    "request": "2.81.0"
+    "request": "2.87.0"
   },
   "devDependencies": {
-    "@types/request": "2.0.3",
-    "typescript": "2.5.2"
+    "@types/request": "2.47.0",
+    "typescript": "2.9.1"
   }
 }

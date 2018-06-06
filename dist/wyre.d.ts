@@ -6,7 +6,7 @@ export declare class WyreClient {
     post(path: string, body?: any, options?: any): Promise<any>;
     put(path: string, body?: any, options?: any): Promise<any>;
     delete(path: string, body?: any, options?: any): Promise<any>;
-    private request(method, path, params?, options?);
-    private buildRequestOptions(method, path, params, options);
-    private buildSignature(requestOptions);
+    private request;
+    private buildRequestOptions;
+    private buildSignature;
 }
