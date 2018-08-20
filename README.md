@@ -20,6 +20,7 @@ const WyreClient = require('wyre-api').WyreClient
 let wyre = new WyreClient({
     apiKey: "P334FCDXQ4UVAWVPUZ4V",
     secretKey: "4AZEWMYB7CFJWWZMCEWX"
+    //baseUrl: "https://api.testwyre.com"
 })
 
 wyre.get("/account")
