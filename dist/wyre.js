@@ -7,6 +7,7 @@ var url = require("url");
 require("es6-shim");
 var WYRE_BASEURL = "https://api.sendwyre.com";
 var WYRE_DEFAULT_API_VERSION = "2";
+var WYRE_DEFAULT_API_FORMAT = "json";
 var WyreClient = (function () {
     function WyreClient(config) {
         this.config = config;
@@ -49,7 +50,8 @@ var WyreClient = (function () {
                 "X-Api-Key": this.config.apiKey
             },
             qs: {
-                timestamp: new Date().getTime()
+                timestamp: new Date().getTime(),
+                format: this.config.format || WYRE_DEFAULT_API_FORMAT
             },
             json: true
         };
