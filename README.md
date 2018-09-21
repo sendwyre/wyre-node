@@ -23,8 +23,7 @@ In the examples below, we have supplied the `format` parameter as `"json_numbers
 numbers returned from our API as strings. If you need to perform arithmetic on these numbers, you ***must***
 use an arbitrary-precision library:
 
-- [BigDecimal.js](https://github.com/iriscouch/bigdecimal.js): a literal port of Java's BigInteger and BigDecimal classes.
-- [bignum](https://github.com/justmoon/node-bignum): Big integer arithmetic using OpenSSL.
+- [bignumber.js](https://github.com/MikeMcl/bignumber.js): A JavaScript library for arbitrary-precision decimal and non-decimal arithmetic
 
 Alternatively, instead supply the (default) `"format":"json"` and the API will encode numbers directly in JSON.
 
@@ -36,7 +35,7 @@ let wyre = new WyreClient({
     format: "json_numberstring",
     apiKey: "P334FCDXQ4UVAWVPUZ4V",
     secretKey: "4AZEWMYB7CFJWWZMCEWX"
-    //baseUrl: "https://api.testwyre.com"
+    // baseUrl: "https://api.testwyre.com"
 })
 
 wyre.get("/account")
