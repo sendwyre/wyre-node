@@ -6,6 +6,7 @@ import 'es6-shim'
 
 const WYRE_BASEURL = "https://api.sendwyre.com"
 const WYRE_DEFAULT_API_VERSION = "2"
+const WYRE_DEFAULT_API_FORMAT = "json"
 
 export class WyreClient {
 
@@ -54,7 +55,8 @@ export class WyreClient {
                 "X-Api-Key": this.config.apiKey
             },
             qs: {
-                timestamp: new Date().getTime()
+                timestamp: new Date().getTime(),
+                format: this.config.format || WYRE_DEFAULT_API_FORMAT
             },
             json: true
         }
