@@ -89,8 +89,8 @@ Example error response:
 {
     language: "en",
     exceptionId: "8MAM48",
-    compositeType: "Field deprecated",
-    subType: "Field deprecated",
+    compositeType: "",
+    subType: "",
     message: "Field dest is required.",
     type: "FieldRequiredException",
     transient: false
