@@ -1,5 +1,5 @@
 {
-  "name": "wyre-api",
+  "name": "@wyre/api",
   "version": "1.0.3",
   "description": "Node.js client library for the Wyre API.",
   "main": "./dist/wyre.js",

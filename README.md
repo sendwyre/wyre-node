@@ -7,7 +7,7 @@ Install
 -------
 
 ```
-npm install wyre-api
+npm install @wyre/api
 ```
 
 Usage
@@ -15,12 +15,12 @@ Usage
 
 *An important note on decimals*:
 
-Some currencies, like ETH, have many decimal places. This can cause problems with the 
+Some currencies, like ETH, have many decimal places. This can cause problems with the
 many JSON implementations that fail to offer support arbitrary precision numbers. Moreover, IEEE 754 floating point
 is not in general a good representation for money - it does not necessarily preserve precision.
 
 In the examples below, we have supplied the `format` parameter as `"json_numberstring"`. This encodes all
-numbers returned from our API as strings. If you need to perform arithmetic on these numbers, you ***must*** 
+numbers returned from our API as strings. If you need to perform arithmetic on these numbers, you ***must***
 use an arbitrary-precision library:
 
 - [BigDecimal.js](https://github.com/iriscouch/bigdecimal.js): a literal port of Java's BigInteger and BigDecimal classes.
@@ -29,8 +29,8 @@ use an arbitrary-precision library:
 Alternatively, instead supply the (default) `"format":"json"` and the API will encode numbers directly in JSON.
 
 ```js
-const WyreClient = require('wyre-api').WyreClient
-// import {WyreClient} from 'wyre-api'
+const WyreClient = require('@wyre/api').WyreClient
+// import {WyreClient} from '@wyre/api'
 
 let wyre = new WyreClient({
     format: "json_numberstring",
