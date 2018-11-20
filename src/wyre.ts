@@ -49,7 +49,7 @@ export class WyreClient {
     private buildRequestOptions(method: string, path: string, params: any, options: any): request.UrlOptions & request.CoreOptions {
         let parsedUrl = url.parse(url.resolve(this.config.baseUrl || WYRE_BASEURL, path), true)
         let requestOptions: request.UrlOptions & request.CoreOptions = {
-            url: parsedUrl.protocol + parsedUrl.host + parsedUrl.pathname, // no querystring here!
+            url: parsedUrl.protocol + "//" + parsedUrl.host + parsedUrl.pathname, // no querystring here!
             method: method,
             headers: {
                 "X-Api-Version": this.config.apiVersion || WYRE_DEFAULT_API_VERSION,
