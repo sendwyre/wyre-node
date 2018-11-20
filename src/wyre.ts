@@ -47,8 +47,9 @@ export class WyreClient {
     }
 
     private buildRequestOptions(method: string, path: string, params: any, options: any): request.UrlOptions & request.CoreOptions {
+        let parsedUrl = url.parse(url.resolve(this.config.baseUrl || WYRE_BASEURL, path), true)
         let requestOptions: request.UrlOptions & request.CoreOptions = {
-            url: url.resolve(this.config.baseUrl || WYRE_BASEURL, path),
+            url: parsedUrl.protocol + parsedUrl.host + parsedUrl.pathname, // no querystring here!
             method: method,
             headers: {
                 "X-Api-Version": this.config.apiVersion || WYRE_DEFAULT_API_VERSION,
@@ -66,6 +67,7 @@ export class WyreClient {
         else
             requestOptions.body = params
 
+        Object.assign(requestOptions.qs, parsedUrl.query);
         requestOptions.headers["X-Api-Signature"] = this.buildSignature(requestOptions)
         requestOptions = Object.assign(requestOptions, this.config.options)
         requestOptions = Object.assign(requestOptions, options)
