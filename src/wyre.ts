@@ -10,7 +10,7 @@ const WYRE_DEFAULT_API_FORMAT = "json"
 
 export class WyreClient {
 
-    constructor(private config: any) {}
+    constructor(private config: any, private masqueradeTarget?: string) {}
 
     public get(path: string, params?: any, options?: any): Promise<any> {
         return this.request("GET", path, params, options)
@@ -26,6 +26,16 @@ export class WyreClient {
 
     public delete(path: string, body?: any, options?: any): Promise<any> {
         return this.request("DELETE", path, body, options)
+    }
+
+    /**
+     * returns a new wyre client which is ostensibly authenticated as the supplied
+     * target
+     *
+     * @param target an account ID or an SRN
+     */
+    public masqueraded(target: string): WyreClient {
+        return new WyreClient(this.config, target);
     }
 
     private request(method: string, path: string, params: any = {}, options: any = {}): Promise<any> {
@@ -68,6 +78,9 @@ export class WyreClient {
             requestOptions.body = params
 
         Object.assign(requestOptions.qs, parsedUrl.query);
+        if(this.masqueradeTarget && !('masqueradeAs' in requestOptions))
+            requestOptions.qs.masqueradeAs = this.masqueradeTarget;
+
         requestOptions.headers["X-Api-Signature"] = this.buildSignature(requestOptions)
         requestOptions = Object.assign(requestOptions, this.config.options)
         requestOptions = Object.assign(requestOptions, options)
