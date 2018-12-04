@@ -42,8 +42,9 @@ var WyreClient = (function () {
         });
     };
     WyreClient.prototype.buildRequestOptions = function (method, path, params, options) {
+        var parsedUrl = url.parse(url.resolve(this.config.baseUrl || WYRE_BASEURL, path), true);
         var requestOptions = {
-            url: url.resolve(this.config.baseUrl || WYRE_BASEURL, path),
+            url: parsedUrl.protocol + "//" + parsedUrl.host + parsedUrl.pathname,
             method: method,
             headers: {
                 "X-Api-Version": this.config.apiVersion || WYRE_DEFAULT_API_VERSION,
@@ -59,6 +60,7 @@ var WyreClient = (function () {
             requestOptions.qs = Object.assign(requestOptions.qs, params);
         else
             requestOptions.body = params;
+        Object.assign(requestOptions.qs, parsedUrl.query);
         requestOptions.headers["X-Api-Signature"] = this.buildSignature(requestOptions);
         requestOptions = Object.assign(requestOptions, this.config.options);
         requestOptions = Object.assign(requestOptions, options);
