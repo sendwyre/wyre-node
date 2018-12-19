@@ -8,7 +8,7 @@ Node.js client library for the [Wyre API](https://www.sendwyre.com/docs/).
 npm install @wyre/api
 ```
 
-### Regarding Decimal Numbers {#decimals}
+### Regarding Decimal Numbers
 
 Some currencies, like ETH, have many decimal places. This can cause problems with the
 many JSON implementations that fail to offer support arbitrary precision numbers. Moreover, IEEE 754 floating point
@@ -29,7 +29,7 @@ on behalf of subaccount. To assist maintaining firm barriers between account per
 of protection), when acting on behalf of a specific account we require explicitly declaring this via the `masqueradeAs`
 parameter.
 
-**This parameter must be passed as a query parameter and _not_ via the body!** Alternatively, you may use the [masquerading API](#masq)
+**This parameter must be passed as a query parameter and _not_ via the body!** Alternatively, you may use the [masquerading API](#masquerading-api)
 for a more natural declaration.
 
 ## Quickstart
@@ -71,7 +71,9 @@ Upload a document:
 ```js
 var fs = require('fs');
 let my_id = fs.readFileSync('./my_id.jpg');
-wyre.post('/v3/accounts/' + account.id + '/individualGovernmentId', my_id, { headers: { 'Content-Type': 'image/jpeg' }})
+wyre.post('/v3/accounts/' + account.id + '/individualGovernmentId', 
+        my_id, 
+        { headers: { 'Content-Type': 'image/jpeg' }})
     .then(successCallback, errorCallback);
 ```
 
@@ -90,7 +92,7 @@ Constructor parameters:
 | apiKey    | your environment-specific Wyre API key
 | secretKey | your environment-specific Wyre API secret
 | baseUrl   | specifies the Wyre environment you'd like to use. please use either:<br>`https://api.sendwyre.com` for production<br>`https://api.testwyre.com` for testwyre
-| format    | the data format you're requesting.<br>`json` for straight JSON <br>`json_numberstring` for JSON with all decimals as strings (see [above](#decimals)]  
+| format    | the data format you're requesting.<br>`json` for straight JSON <br>`json_numberstring` for JSON with all decimals as strings (see [above](#regarding-decimal-numbers)]  
 | options   | options that are passed to the underlying [Request](https://github.com/request/request) for _every_ request
 
 Note that the ability to override options used by the [Request](https://github.com/request/request) client is 
@@ -110,7 +112,7 @@ wyre.put(path, body, options)
 wyre.delete(path, body, options)
 ```
 
-### Masquerading API {#masq}
+### Masquerading API
 
 This is an alternative to supplying the `masqueradeAs` parameter as a query parameter.
 
