@@ -10,7 +10,11 @@ const WYRE_DEFAULT_API_FORMAT = "json"
 
 export class WyreClient {
 
-    constructor(private config: any, private masqueradeTarget?: string) {}
+    constructor(private config: any, private masqueradeTarget?: string) {
+        if(!config.secretKey) throw new Error('config.secretKey is missing');
+        if(!config.apiKey)  throw new Error('config.apiKey is missing');
+        this.config.options = this.config.options || {};
+    }
 
     public get(path: string, params?: any, options?: any): Promise<any> {
         return this.request("GET", path, params, options)
@@ -47,21 +51,29 @@ export class WyreClient {
         return new Promise((resolve, reject) => {
             request(requestOptions, (err, res) => {
                 if(err)
-                    throw err
-                if(("" + res.statusCode).match(/^2\d\d$/))
+                    throw err;
+                else if(res.statusCode >= 200 && res.statusCode < 300)
                     resolve(res.body || {})
                 else
-                    reject(res.body)
+                    reject(res.body || { statusCode: res.statusCode })
             })
         })
     }
 
     private buildRequestOptions(method: string, path: string, params: any, options: any): request.UrlOptions & request.CoreOptions {
+        options = options || {};
+
         let parsedUrl = url.parse(url.resolve(this.config.baseUrl || WYRE_BASEURL, path), true)
+        let json = !(options.headers || {}).hasOwnProperty('Content-Type') || options.headers['Content-Type'] == 'application/json';
+
         let requestOptions: request.UrlOptions & request.CoreOptions = {
+            ...this.config.options,
+            ...options,
             url: parsedUrl.protocol + "//" + parsedUrl.host + parsedUrl.pathname, // no querystring here!
             method: method,
             headers: {
+                ...this.config.options.headers,
+                ...options.headers,
                 "X-Api-Version": this.config.apiVersion || WYRE_DEFAULT_API_VERSION,
                 "X-Api-Key": this.config.apiKey
             },
@@ -69,8 +81,8 @@ export class WyreClient {
                 timestamp: new Date().getTime(),
                 format: this.config.format || WYRE_DEFAULT_API_FORMAT
             },
-            json: true
-        }
+            json: json
+        };
 
         if(requestOptions.method == "GET")
             requestOptions.qs = Object.assign(requestOptions.qs, params)
@@ -81,9 +93,7 @@ export class WyreClient {
         if(this.masqueradeTarget && !('masqueradeAs' in requestOptions))
             requestOptions.qs.masqueradeAs = this.masqueradeTarget;
 
-        requestOptions.headers["X-Api-Signature"] = this.buildSignature(requestOptions)
-        requestOptions = Object.assign(requestOptions, this.config.options)
-        requestOptions = Object.assign(requestOptions, options)
+        requestOptions.headers["X-Api-Signature"] = this.buildSignature(requestOptions);
 
         return requestOptions
     }
