@@ -62,10 +62,7 @@ var WyreClient = (function () {
         options = options || {};
         var parsedUrl = url.parse(url.resolve(this.config.baseUrl || WYRE_BASEURL, path), true);
         var json = !(options.headers || {}).hasOwnProperty('Content-Type') || options.headers['Content-Type'] == 'application/json';
-        var requestOptions = __assign({}, this.config.options, options, { url: parsedUrl.protocol + "//" + parsedUrl.host + parsedUrl.pathname, method: method, headers: __assign({}, this.config.options.headers, options.headers, { "X-Api-Version": this.config.apiVersion || WYRE_DEFAULT_API_VERSION, "X-Api-Key": this.config.apiKey }), qs: {
-                timestamp: new Date().getTime(),
-                format: this.config.format || WYRE_DEFAULT_API_FORMAT
-            }, json: json });
+        var requestOptions = __assign({}, this.config.options, options, { url: parsedUrl.protocol + "//" + parsedUrl.host + parsedUrl.pathname, method: method, headers: __assign({}, this.config.options.headers, options.headers, { "X-Api-Version": this.config.apiVersion || WYRE_DEFAULT_API_VERSION, "X-Api-Key": this.config.apiKey }), qs: __assign({}, this.config.qs, options.qs, { timestamp: new Date().getTime(), format: this.config.format || WYRE_DEFAULT_API_FORMAT }), json: json });
         if (requestOptions.method == "GET")
             requestOptions.qs = Object.assign(requestOptions.qs, params);
         else
@@ -77,11 +74,21 @@ var WyreClient = (function () {
         return requestOptions;
     };
     WyreClient.prototype.buildSignature = function (requestOptions) {
-        var url = requestOptions.url + "?" + querystring.stringify(requestOptions.qs);
-        if (requestOptions.body)
-            url += JSON.stringify(requestOptions.body);
+        var buffers = [];
+        var encoding = 'utf8';
+        buffers.push(Buffer.from(requestOptions.url.toString(), encoding));
+        buffers.push(Buffer.from(requestOptions.url.toString().indexOf('?') < 0 ? "?" : "&", encoding));
+        buffers.push(Buffer.from(querystring.stringify(requestOptions.qs), encoding));
+        if (requestOptions.body) {
+            if (typeof requestOptions.body == 'string')
+                buffers.push(Buffer.from(requestOptions.body, encoding));
+            else if (requestOptions.body instanceof Buffer)
+                buffers.push(requestOptions.body);
+            else
+                buffers.push(Buffer.from(JSON.stringify(requestOptions.body), encoding));
+        }
         return crypto.createHmac("sha256", this.config.secretKey)
-            .update(url)
+            .update(Buffer.concat(buffers))
             .digest("hex");
     };
     return WyreClient;

@@ -78,6 +78,8 @@ export class WyreClient {
                 "X-Api-Key": this.config.apiKey
             },
             qs: {
+                ...this.config.qs,
+                ...options.qs,
                 timestamp: new Date().getTime(),
                 format: this.config.format || WYRE_DEFAULT_API_FORMAT
             },
@@ -99,11 +101,24 @@ export class WyreClient {
     }
 
     private buildSignature(requestOptions: request.UrlOptions & request.CoreOptions): string {
-        let url = requestOptions.url + "?" + querystring.stringify(requestOptions.qs)
-        if(requestOptions.body)
-            url += JSON.stringify(requestOptions.body)
+        let buffers: Buffer[] = [];
+        const encoding = 'utf8';
+
+        buffers.push(Buffer.from(requestOptions.url.toString(), encoding));
+        buffers.push(Buffer.from(requestOptions.url.toString().indexOf('?') < 0 ? "?" : "&", encoding));
+        buffers.push(Buffer.from(querystring.stringify(requestOptions.qs), encoding));
+
+        if(requestOptions.body) {
+            if(typeof requestOptions.body == 'string')
+                buffers.push(Buffer.from(requestOptions.body, encoding));
+            else if(requestOptions.body instanceof Buffer)
+                buffers.push(requestOptions.body);
+            else
+                buffers.push(Buffer.from(JSON.stringify(requestOptions.body), encoding));
+        }
+
         return crypto.createHmac("sha256", this.config.secretKey)
-            .update(url)
+            .update(Buffer.concat(buffers))
             .digest("hex")
     }
 }
