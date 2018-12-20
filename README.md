@@ -1,19 +1,14 @@
-Wyre
-====
+# Wyre NodeJS API Client
 
 Node.js client library for the [Wyre API](https://www.sendwyre.com/docs/).
 
-Install
--------
+## Install
 
 ```
 npm install @wyre/api
 ```
 
-Usage
------
-
-*An important note on decimals*:
+### Regarding Decimal Numbers
 
 Some currencies, like ETH, have many decimal places. This can cause problems with the
 many JSON implementations that fail to offer support arbitrary precision numbers. Moreover, IEEE 754 floating point
@@ -27,71 +22,125 @@ use an arbitrary-precision library:
 
 Alternatively, instead supply the (default) `"format":"json"` and the API will encode numbers directly in JSON.
 
+### Regarding Masquerading
+
+As the Wyre API may be used in a custodial context; this means that a single account may have permission to act
+on behalf of subaccount. To assist maintaining firm barriers between account permissions (creating an extra barrier
+of protection), when acting on behalf of a specific account we require explicitly declaring this via the `masqueradeAs`
+parameter.
+
+**This parameter must be passed as a query parameter and _not_ via the body!** Alternatively, you may use the [masquerading API](#masquerading-api)
+for a more natural declaration.
+
+## Quickstart
+
 ```js
 const WyreClient = require('@wyre/api').WyreClient
-// import {WyreClient} from '@wyre/api'
 
 let wyre = new WyreClient({
     format: "json_numberstring",
-    apiKey: "P334FCDXQ4UVAWVPUZ4V",
-    secretKey: "4AZEWMYB7CFJWWZMCEWX"
-    // baseUrl: "https://api.testwyre.com"
-})
+    apiKey: "AK-AAAAAAA-AAAAAAA-AAAAAAA-AAAAAAA",
+    secretKey: "SK-AAAAAAA-AAAAAAA-AAAAAAA-AAAAAAA"
+    // baseUrl: "https://api.testwyre.com" // todo uncomment this line to use the testwyre environment
+});
 
-wyre.get("/account")
-    .then(data => {
-        // .. success
+wyre.get("/v2/account")
+    .then(account => {
+        console.log("I am Wyre account ", account.id);
     },
     err => {
-        // .. error
-    })
+        console.log("Problems, cap'n: ", err);
+    });
+```
 
-wyre.get("/transfers", {
-    limit: 1,
-    offset: 1
-})
-    .then(successCallback, errorCallback)
+You're all set to begin coding!
 
+### Example API Calls
+
+Attempt a $10 USD->BTC conversion:
+```js
 wyre.post("/transfers", {
     sourceAmount: "10",
     sourceCurrency: "USD",
-    dest: "email:test@sendwyre.com"
-})
-    .then(successCallback, errorCallback)
+    destCurrency: "BTC",
+    dest: "account:" + account.id
+}).then(successCallback, errorCallback)
 ```
 
-Ability to override options used by the [Request](https://github.com/request/request) client on both constructor and per request:
+Upload a document:
+```js
+var fs = require('fs');
+let my_id = fs.readFileSync('./my_id.jpg');
+wyre.post('/v3/accounts/' + account.id + '/individualGovernmentId', 
+        my_id, 
+        { headers: { 'Content-Type': 'image/jpeg' }})
+    .then(successCallback, errorCallback);
+```
+
+## API Reference
+
+### Constructor
 
 ```js
-let wyre = new WyreClient({
-    format: "json_numberstring",
-    apiKey: "P334FCDXQ4UVAWVPUZ4V",
-    secretKey: "4AZEWMYB7CFJWWZMCEWX",
-    options: {
-        timeout: 1500
-    }
-})
+let wyre = new WyreClient({/*parameter object*/})
 ```
+
+Constructor parameters:
+
+| parameter | description
+| ----------|--------------
+| apiKey    | your environment-specific Wyre API key
+| secretKey | your environment-specific Wyre API secret
+| baseUrl   | specifies the Wyre environment you'd like to use. please use either:<br>`https://api.sendwyre.com` for production<br>`https://api.testwyre.com` for testwyre
+| format    | the data format you're requesting.<br>`json` for straight JSON <br>`json_numberstring` for JSON with all decimals as strings (see [above](#regarding-decimal-numbers)]  
+| options   | options that are passed to the underlying [Request](https://github.com/request/request) for _every_ request
+
+Note that the ability to override options used by the [Request](https://github.com/request/request) client is 
+available both generally as well as per-request.
+
+Timeouts may be adjusted via the `options.timeout` (expressed in milliseconds). This may be controlled via the constructor,
+or per-request (as with all options).
+
+### Request API
+
+Each of these methods performs a single Wyre API request and returns a promise for the resulting API response.
 
 ```js
-wyre.get("/rates", {}, {
-    timeout: 1500
-})
-    .then(successCallback, errorCallback)
+wyre.get(path, parameters, options)
+wyre.post(path, body, options)
+wyre.put(path, body, options)
+wyre.delete(path, body, options)
 ```
 
-Errors
-------
+### Masquerading API
+
+This is an alternative to supplying the `masqueradeAs` parameter as a query parameter.
+
+```js
+// init the wyre client as usual
+let wyre = new WyreClient({ /* your master api access setup here */ });
+
+// create another sub-client authenticated as a particular user
+let user1_wyre = wyre.masqueraded('AC-ABCDE12345');
+
+// now use that client as normal!
+user1_wyre.get('/v3/accounts/AC-ABCDE12345').then(successCallback, failureCallback);
+
+```
+
+### Errors
 
 Example error response:
-```js
+```json
 {
-    language: "en",
-    exceptionId: "8MAM48",
-    compositeType: "",
-    subType: "",
-    message: "Field dest is required.",
-    type: "FieldRequiredException",
-    transient: false
+    "language": "en",
+    "exceptionId": "8MAM48",
+    "compositeType": "",
+    "subType": "",
+    "message": "Field dest is required.",
+    "type": "FieldRequiredException",
+    "transient": false
 }
 ```
+
+

@@ -1,13 +1,16 @@
 {
   "name": "@wyre/api",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Node.js client library for the Wyre API.",
   "main": "./dist/wyre.js",
-  "scripts": {},
+  "scripts": {
+    "build": "bin/build"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/sendwyre/wyre-node.git"
   },
+  "homepage": "https://github.com/sendwyre/wyre-node#readme",
   "keywords": [
     "wyre",
     "exchange",
