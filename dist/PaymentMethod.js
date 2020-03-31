@@ -50,60 +50,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Model_1 = require("./Model");
-var Transfer_1 = require("./Transfer");
-var PaymentMethod_1 = require("./PaymentMethod");
-var Account = (function (_super) {
-    __extends(Account, _super);
-    function Account() {
+var PaymentMethod = (function (_super) {
+    __extends(PaymentMethod, _super);
+    function PaymentMethod() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Account.fetch = function (id, api) {
+    PaymentMethod.fetchAll = function (api) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, account, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var paymentMethods;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         api.requireAuthed();
-                        return [4, api.get("accounts/" + id)];
+                        return [4, api.get('paymentMethods', null, {
+                                version: '2'
+                            })];
                     case 1:
-                        data = _b.sent();
-                        account = new Account(data, api);
-                        _a = account;
-                        return [4, PaymentMethod_1.default.fetchAll(api)];
-                    case 2:
-                        _a.paymentMethods = _b.sent();
-                        return [2, account];
+                        paymentMethods = (_a.sent()).data;
+                        return [2, paymentMethods.map(function (paymentData) { return new PaymentMethod(paymentData, api); })];
                 }
             });
         });
     };
-    Account.prototype.createTransfer = function (params) {
-        return __awaiter(this, void 0, void 0, function () {
-            var transfer;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, Transfer_1.default.create(params, this.api)];
-                    case 1:
-                        transfer = _a.sent();
-                        return [2, transfer];
-                }
-            });
-        });
-    };
-    Account.prototype.getTransfers = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var data;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.api.get('transfers')];
-                    case 1:
-                        data = (_a.sent()).data;
-                        return [2, data.map(function (transferData) { return new Transfer_1.default(transferData, _this.api); })];
-                }
-            });
-        });
-    };
-    return Account;
+    return PaymentMethod;
 }(Model_1.default));
-exports.default = Account;
+exports.default = PaymentMethod;

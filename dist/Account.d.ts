@@ -1,5 +1,6 @@
 import Model from './Model';
 import Transfer from './Transfer';
+import PaymentMethod from './PaymentMethod';
 import Api from './utils/Api';
 import type { IAccount, IProfileField } from './Account/IAccount';
 import type { ICreateTransferParams } from './Transfer/ITransfer';
@@ -22,6 +23,7 @@ export default class Account extends Model<Account> implements IAccount {
         ETH: number;
     };
     profileFields: Array<IProfileField>;
+    paymentMethods: Array<PaymentMethod>;
     static fetch(id: string, api: Api): Promise<Account>;
     createTransfer(params: ICreateTransferParams): Promise<Transfer>;
     getTransfers(): Promise<Array<Transfer>>;

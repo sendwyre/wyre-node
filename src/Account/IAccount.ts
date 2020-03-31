@@ -1,3 +1,5 @@
+import type { IPaymentMethod } from '../PaymentMethod/IPaymentMethod'
+
 export interface IAccount {
   id: string
   status: string
@@ -17,6 +19,7 @@ export interface IAccount {
     ETH: number
   }
   profileFields: Array<IProfileField>
+  paymentMethods: Array<IPaymentMethod>
 }
 
 export interface IProfileField {

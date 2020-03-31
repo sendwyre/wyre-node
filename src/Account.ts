@@ -1,5 +1,6 @@
 import Model from './Model'
 import Transfer from './Transfer'
+import PaymentMethod from './PaymentMethod'
 import Api from './utils/Api'
 import type { IAccount, IProfileField } from './Account/IAccount'
 import type { ICreateTransferParams, ITransferHistoryResponse } from './Transfer/ITransfer'
@@ -14,12 +15,14 @@ export default class Account extends Model<Account> implements IAccount {
   public totalBalances: { BTC: number; ETH: number }
   public availableBalances: { BTC: number; ETH: number }
   public profileFields: Array<IProfileField>
+  public paymentMethods: Array<PaymentMethod>
 
   public static async fetch(id: string, api: Api): Promise<Account> {
     api.requireAuthed()
 
     const data = await api.get(`accounts/${id}`)
     const account = new Account(data, api)
+    account.paymentMethods = await PaymentMethod.fetchAll(api)
 
     return account
   }
