@@ -51,26 +51,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Model_1 = require("./Model");
 var Transfer_1 = require("./Transfer");
-var API_1 = require("./utils/API");
 var Account = (function (_super) {
     __extends(Account, _super);
     function Account() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     Account.fetch = function (id, api) {
-        if (api === void 0) { api = new API_1.default(); }
         return __awaiter(this, void 0, void 0, function () {
-            var accountUrl, data;
+            var data, account;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        accountUrl = 'accounts';
-                        if (!!id)
-                            accountUrl += "/" + id;
-                        return [4, api.get(accountUrl)];
+                        api.requireAuthed();
+                        return [4, api.get("accounts/" + id)];
                     case 1:
                         data = _a.sent();
-                        return [2, new Account(data, api)];
+                        account = new Account(data, api);
+                        return [2, account];
                 }
             });
         });

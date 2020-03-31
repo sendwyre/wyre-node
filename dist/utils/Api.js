@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -29,32 +16,43 @@ var crypto = require("crypto");
 var querystring = require("querystring");
 var url = require("url");
 require("es6-shim");
-var Authed_1 = require("../Authed");
-var WYRE_BASEURL = 'https://api.testwyre.com';
-var WYRE_API_VERSION = '3';
-var WYRE_DEFAULT_API_FORMAT = 'json';
-var API = (function (_super) {
-    __extends(API, _super);
-    function API() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var Api = (function () {
+    function Api(config) {
+        var defaultConfig = {
+            uri: 'https://api.testwyre.com',
+            version: '3',
+            format: 'json',
+            qs: {},
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        this.config = Object.assign({}, defaultConfig, config);
     }
-    API.prototype.requireAuthed = function () {
+    Object.defineProperty(Api.prototype, "isAuthed", {
+        get: function () {
+            return !!this.config.auth && !!this.config.auth.secretKey && !!this.config.auth.apiKey;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Api.prototype.requireAuthed = function () {
         if (!this.isAuthed)
             throw new Error('Must be authenticated for this endpoint.');
     };
-    API.prototype.get = function (path, params, options) {
+    Api.prototype.get = function (path, params, options) {
         return this.request('GET', path, params, options);
     };
-    API.prototype.post = function (path, body, options) {
+    Api.prototype.post = function (path, body, options) {
         return this.request('POST', path, body, options);
     };
-    API.prototype.put = function (path, body, options) {
+    Api.prototype.put = function (path, body, options) {
         return this.request('PUT', path, body, options);
     };
-    API.prototype.delete = function (path, body, options) {
+    Api.prototype.delete = function (path, body, options) {
         return this.request('DELETE', path, body, options);
     };
-    API.prototype.request = function (method, path, params, options) {
+    Api.prototype.request = function (method, path, params, options) {
         if (params === void 0) { params = {}; }
         if (options === void 0) { options = {}; }
         if (!path)
@@ -71,24 +69,26 @@ var API = (function (_super) {
             });
         });
     };
-    API.prototype.buildRequestOptions = function (method, path, params, options) {
-        var parsedUrl = url.parse(url.resolve(WYRE_BASEURL, "v" + (path === 'paymentMethods' ? '2' : WYRE_API_VERSION) + "/" + path), true);
-        var json = !(options.headers || {}).hasOwnProperty('Content-Type') || options.headers['Content-Type'] == 'application/json';
-        var requestOptions = __assign(__assign(__assign({}, this.config.options), options), { url: parsedUrl.protocol + '//' + parsedUrl.host + parsedUrl.pathname, method: method, headers: __assign(__assign({}, this.config.options.headers), options.headers), qs: __assign(__assign(__assign({}, this.config.qs), options.qs), { timestamp: new Date().getTime(), format: this.config.format || WYRE_DEFAULT_API_FORMAT }), json: json });
+    Api.prototype.buildRequestOptions = function (method, path, params, options) {
+        var config = __assign(__assign(__assign({}, this.config), options), { headers: __assign(__assign({}, this.config.headers), options.headers), qs: __assign(__assign({}, this.config.qs), options.qs) });
+        var parsedUrl = url.parse(url.resolve(config.uri, "v" + config.version + "/" + path), true);
+        var json = config.headers['Content-Type'] === 'application/json';
+        var requestOptions = __assign(__assign({}, options), { url: parsedUrl.protocol + '//' + parsedUrl.host + parsedUrl.pathname, method: method, headers: __assign({}, config.headers), qs: __assign(__assign({}, config.qs), { timestamp: new Date().getTime(), format: this.config.format }), json: json });
         if (requestOptions.method == 'GET')
             requestOptions.qs = Object.assign(requestOptions.qs, params);
         else
             requestOptions.body = params;
         Object.assign(requestOptions.qs, parsedUrl.query);
-        if (this.isAuthed && this.config.auth.masqueradeTarget && !('masqueradeAs' in requestOptions))
-            requestOptions.qs.masqueradeAs = this.config.auth.masqueradeTarget;
+        if (this.isAuthed && config.auth.masqueradeTarget && !('masqueradeAs' in requestOptions))
+            requestOptions.qs.masqueradeAs = config.auth.masqueradeTarget;
         if (this.isAuthed) {
-            requestOptions.headers['X-Api-Key'] = this.config.auth.apiKey;
+            requestOptions.headers['X-Api-Key'] = config.auth.apiKey;
             requestOptions.headers['X-Api-Signature'] = this.buildSignature(requestOptions);
         }
         return requestOptions;
     };
-    API.prototype.buildSignature = function (requestOptions) {
+    Api.prototype.buildSignature = function (requestOptions) {
+        this.requireAuthed();
         var buffers = [];
         var encoding = 'utf8';
         buffers.push(Buffer.from(requestOptions.url.toString(), encoding));
@@ -106,6 +106,6 @@ var API = (function (_super) {
             .update(Buffer.concat(buffers))
             .digest('hex');
     };
-    return API;
-}(Authed_1.default));
-exports.default = API;
+    return Api;
+}());
+exports.default = Api;

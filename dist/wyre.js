@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -49,15 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Authed_1 = require("./Authed");
 var Account_1 = require("./Account");
-var API_1 = require("./utils/API");
-var WyreClient = (function (_super) {
-    __extends(WyreClient, _super);
+var Api_1 = require("./utils/Api");
+var WyreClient = (function () {
     function WyreClient(config) {
-        var _this = _super.call(this, config) || this;
-        _this.api = new API_1.default(config);
-        return _this;
+        this.api = new Api_1.default(config);
     }
     WyreClient.prototype.fetchAccount = function (id, masquerade) {
         if (masquerade === void 0) { masquerade = false; }
@@ -65,17 +48,17 @@ var WyreClient = (function (_super) {
             var api, newConfig;
             return __generator(this, function (_a) {
                 api = this.api;
-                if (!!id && masquerade) {
-                    if (!this.isAuthed)
+                if (masquerade) {
+                    if (!this.api.isAuthed)
                         throw new Error('Cannot masquerade with no authorization.');
-                    newConfig = Object.assign({}, this.config);
+                    newConfig = Object.assign({}, this.api.config);
                     newConfig.auth.masqueradeTarget = id;
-                    api = new API_1.default(newConfig);
+                    api = new Api_1.default(newConfig);
                 }
                 return [2, Account_1.default.fetch(id, api)];
             });
         });
     };
     return WyreClient;
-}(Authed_1.default));
+}());
 exports.default = WyreClient;

@@ -4,30 +4,51 @@ import * as querystring from 'querystring'
 import * as url from 'url'
 import 'es6-shim'
 
-import Authed from '../Authed'
+import { IApiConfig, IApiOptions } from './API/IApiConfig'
 
-const WYRE_BASEURL = 'https://api.testwyre.com'
-const WYRE_API_VERSION = '3'
-const WYRE_DEFAULT_API_FORMAT = 'json'
+export default class Api {
+  public readonly config: IApiConfig
 
-export default class API extends Authed {
-  public get<T extends any>(path: string, params?: any, options?: any): Promise<T> {
+  constructor(config?: IApiConfig) {
+    const defaultConfig: IApiConfig = {
+      uri: 'https://api.testwyre.com',
+      version: '3',
+      format: 'json',
+      qs: {},
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+
+    this.config = Object.assign({}, defaultConfig, config)
+  }
+
+  public get isAuthed(): boolean {
+    return !!this.config.auth && !!this.config.auth.secretKey && !!this.config.auth.apiKey
+  }
+
+  public requireAuthed() {
+    if (!this.isAuthed)
+      throw new Error('Must be authenticated for this endpoint.')
+  }
+
+  public get<T extends any>(path: string, params?: object, options?: IApiOptions): Promise<T> {
     return this.request<T>('GET', path, params, options)
   }
 
-  public post<T extends any>(path: string, body?: any, options?: any): Promise<T> {
+  public post<T extends any>(path: string, body?: object, options?: IApiOptions): Promise<T> {
     return this.request<T>('POST', path, body, options)
   }
 
-  public put<T extends any>(path: string, body?: any, options?: any): Promise<T> {
+  public put<T extends any>(path: string, body?: object, options?: IApiOptions): Promise<T> {
     return this.request<T>('PUT', path, body, options)
   }
 
-  public delete<T extends any>(path: string, body?: any, options?: any): Promise<T> {
+  public delete<T extends any>(path: string, body?: object, options?: IApiOptions): Promise<T> {
     return this.request<T>('DELETE', path, body, options)
   }
 
-  private request<T extends any>(method: string, path: string, params: any = {}, options: any = {}): Promise<T> {
+  private request<T extends any>(method: string, path: string, params: object = {}, options: IApiOptions = {}): Promise<T> {
     if (!path)
       throw 'path required'
 
@@ -45,26 +66,34 @@ export default class API extends Authed {
     })
   }
 
-  private buildRequestOptions(method: string, path: string, params: any, options: any): request.UrlOptions & request.CoreOptions {
-    options = options || {}
-
-    let parsedUrl = url.parse(url.resolve(WYRE_BASEURL, `v${WYRE_API_VERSION}/${path}`), true)
-    let json = !(options.headers || {}).hasOwnProperty('Content-Type') || options.headers['Content-Type'] == 'application/json'
-
-    let requestOptions: request.UrlOptions & request.CoreOptions = {
-      ...this.config.options,
+  private buildRequestOptions(method: string, path: string, params: any, options: IApiOptions): request.UrlOptions & request.CoreOptions {
+    const config: IApiConfig = {
+      ...this.config,
       ...options,
-      url: parsedUrl.protocol + '//' + parsedUrl.host + parsedUrl.pathname, // no querystring here!
-      method: method,
       headers: {
-        ...this.config.options.headers,
+        ...this.config.headers,
         ...options.headers
       },
       qs: {
         ...this.config.qs,
-        ...options.qs,
+        ...options.qs
+      }
+    }
+
+    const parsedUrl = url.parse(url.resolve(config.uri, `v${config.version}/${path}`), true)
+    const json = config.headers['Content-Type'] === 'application/json'
+
+    let requestOptions: request.UrlOptions & request.CoreOptions = {
+      ...options,
+      url: parsedUrl.protocol + '//' + parsedUrl.host + parsedUrl.pathname, // no querystring here!
+      method: method,
+      headers: {
+        ...config.headers
+      },
+      qs: {
+        ...config.qs,
         timestamp: new Date().getTime(),
-        format: this.config.format || WYRE_DEFAULT_API_FORMAT
+        format: this.config.format
       },
       json: json
     }
@@ -75,11 +104,11 @@ export default class API extends Authed {
       requestOptions.body = params
 
     Object.assign(requestOptions.qs, parsedUrl.query)
-    if (this.isAuthed && this.config.auth.masqueradeTarget && !('masqueradeAs' in requestOptions))
-      requestOptions.qs.masqueradeAs = this.config.auth.masqueradeTarget
+    if (this.isAuthed && config.auth.masqueradeTarget && !('masqueradeAs' in requestOptions))
+      requestOptions.qs.masqueradeAs = config.auth.masqueradeTarget
 
     if (this.isAuthed) {
-      requestOptions.headers['X-Api-Key'] = this.config.auth.apiKey
+      requestOptions.headers['X-Api-Key'] = config.auth.apiKey
       requestOptions.headers['X-Api-Signature'] = this.buildSignature(requestOptions)
     }
 
@@ -87,6 +116,8 @@ export default class API extends Authed {
   }
 
   private buildSignature(requestOptions: request.UrlOptions & request.CoreOptions): string {
+    this.requireAuthed()
+
     let buffers: Buffer[] = []
     const encoding = 'utf8'
 

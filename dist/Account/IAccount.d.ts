@@ -1,5 +1,4 @@
-import type { IPaymentMethod } from '../PaymentMethod/IPaymentMethod';
-export interface IAccountData {
+export interface IAccount {
     id: string;
     status: string;
     type: string;
@@ -17,7 +16,6 @@ export interface IAccountData {
         BTC: number;
         ETH: number;
     };
-    paymentMethods: Array<IPaymentMethod>;
     profileFields: Array<IProfileField>;
 }
 export interface IProfileField {
@@ -27,4 +25,4 @@ export interface IProfileField {
     note: string | null;
     status: string;
 }
-//# sourceMappingURL=IAccountData.d.ts.map
+//# sourceMappingURL=IAccount.d.ts.map

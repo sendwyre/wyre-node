@@ -1,9 +1,8 @@
 import Model from './Model'
-import API from './utils/API'
-import type { IStatusHistory, ITransferData, ITransferFees } from './Transfer/ITransferData'
-import type { CreateTransferParams } from './Transfer/ICreateTransferParams'
+import Api from './utils/Api'
+import type { ITransferStatusHistory, ITransfer, ITransferFees, ICreateTransferParams } from './Transfer/ITransfer'
 
-export default class Transfer extends Model<Transfer> implements ITransferData {
+export default class Transfer extends Model<Transfer> implements ITransfer {
   public blockchainTx: string
   public cancelledAt: number
   public completedAt: number
@@ -26,24 +25,26 @@ export default class Transfer extends Model<Transfer> implements ITransferData {
   public sourceAmount: number
   public sourceCurrency: string
   public status: string
-  public statusHistories: Array<IStatusHistory>
+  public statusHistories: Array<ITransferStatusHistory>
   public totalFees: number
 
-  public static verifyCreateParams(params: CreateTransferParams) {
+  public static verifyCreateParams(params: ICreateTransferParams) {
     if (params.sourceAmount && params.destinationAmount)
       throw new Error('Cannot have both source and destination amounts defined.')
   }
 
-  public static async create(params: CreateTransferParams, api = new API()): Promise<Transfer> {
+  public static async create(params: ICreateTransferParams, api: Api): Promise<Transfer> {
+    api.requireAuthed()
+
     this.verifyCreateParams(params)
 
-    const data = await api.post<ITransferData>('transfers', params)
+    const data = await api.post<ITransfer>('transfers', params)
 
     return new Transfer(data, api)
   }
 
   public async confirm() {
-    const data = await this.api.post<ITransferData>(`transfers/${this.id}/confirm`)
+    const data = await this.api.post<ITransfer>(`transfers/${this.id}/confirm`)
     this.set(data)
   }
 }

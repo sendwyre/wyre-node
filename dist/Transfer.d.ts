@@ -1,8 +1,7 @@
 import Model from './Model';
-import API from './utils/API';
-import type { IStatusHistory, ITransferData, ITransferFees } from './Transfer/ITransferData';
-import type { CreateTransferParams } from './Transfer/ICreateTransferParams';
-export default class Transfer extends Model<Transfer> implements ITransferData {
+import Api from './utils/Api';
+import type { ITransferStatusHistory, ITransfer, ITransferFees, ICreateTransferParams } from './Transfer/ITransfer';
+export default class Transfer extends Model<Transfer> implements ITransfer {
     blockchainTx: string;
     cancelledAt: number;
     completedAt: number;
@@ -25,10 +24,10 @@ export default class Transfer extends Model<Transfer> implements ITransferData {
     sourceAmount: number;
     sourceCurrency: string;
     status: string;
-    statusHistories: Array<IStatusHistory>;
+    statusHistories: Array<ITransferStatusHistory>;
     totalFees: number;
-    static verifyCreateParams(params: CreateTransferParams): void;
-    static create(params: CreateTransferParams, api?: API): Promise<Transfer>;
+    static verifyCreateParams(params: ICreateTransferParams): void;
+    static create(params: ICreateTransferParams, api: Api): Promise<Transfer>;
     confirm(): Promise<void>;
 }
 //# sourceMappingURL=Transfer.d.ts.map

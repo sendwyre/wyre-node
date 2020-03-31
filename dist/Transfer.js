@@ -50,7 +50,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Model_1 = require("./Model");
-var API_1 = require("./utils/API");
 var Transfer = (function (_super) {
     __extends(Transfer, _super);
     function Transfer() {
@@ -61,12 +60,12 @@ var Transfer = (function (_super) {
             throw new Error('Cannot have both source and destination amounts defined.');
     };
     Transfer.create = function (params, api) {
-        if (api === void 0) { api = new API_1.default(); }
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        api.requireAuthed();
                         this.verifyCreateParams(params);
                         return [4, api.post('transfers', params)];
                     case 1:

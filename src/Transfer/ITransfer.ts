@@ -1,11 +1,4 @@
-export interface ITransferHistory {
-  data: Array<ITransferData>
-  position: number
-  recordsTotal: number
-  recordsFiltered: number
-}
-
-export interface ITransferData {
+export interface ITransfer {
   id: string
   sourceAmount: number
   sourceCurrency: string
@@ -27,7 +20,7 @@ export interface ITransferData {
   pendingSubStatus: string
   dest: string
   blockchainTx: string
-  statusHistories: Array<IStatusHistory>
+  statusHistories: Array<ITransferStatusHistory>
   owner: string
   source: string
 }
@@ -36,7 +29,7 @@ export interface ITransferFees {
   [assetTicker: string]: number
 }
 
-export interface IStatusHistory {
+export interface ITransferStatusHistory {
   id: string
   transferId: string
   createdAt: number
@@ -45,4 +38,27 @@ export interface IStatusHistory {
   statusDetail: string
   state: string
   failedState: boolean
+}
+
+export interface ICreateTransferParams {
+  source: string
+  sourceCurrency: string
+  sourceAmount?: string
+  destination: string
+  destinationCurrency: string
+  destinationAmount?: string
+  message?: string
+  notifyUrl?: string
+  autoConfirm?: boolean
+  customId?: string
+  amountIncludesFees?: boolean
+  preview?: boolean
+  muteMessages?: boolean
+}
+
+export interface ITransferHistoryResponse {
+  data: Array<ITransfer>
+  position: number
+  recordsTotal: number
+  recordsFiltered: number
 }
