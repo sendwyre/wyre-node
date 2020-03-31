@@ -49,33 +49,59 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Authed_1 = require("./Authed");
-var Account_1 = require("./Account");
+var Model_1 = require("./Model");
+var Transfer_1 = require("./Transfer");
 var API_1 = require("./utils/API");
-var WyreClient = (function (_super) {
-    __extends(WyreClient, _super);
-    function WyreClient(config) {
-        var _this = _super.call(this, config) || this;
-        _this.api = new API_1.default(config);
-        return _this;
+var Account = (function (_super) {
+    __extends(Account, _super);
+    function Account() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    WyreClient.prototype.fetchAccount = function (id, masquerade) {
-        if (masquerade === void 0) { masquerade = false; }
+    Account.fetch = function (id, api) {
+        if (api === void 0) { api = new API_1.default(); }
         return __awaiter(this, void 0, void 0, function () {
-            var api, newConfig;
+            var accountUrl, data;
             return __generator(this, function (_a) {
-                api = this.api;
-                if (!!id && masquerade) {
-                    if (!this.isAuthed)
-                        throw new Error('Cannot masquerade with no authorization.');
-                    newConfig = Object.assign({}, this.config);
-                    newConfig.auth.masqueradeTarget = id;
-                    api = new API_1.default(newConfig);
+                switch (_a.label) {
+                    case 0:
+                        accountUrl = 'accounts';
+                        if (!!id)
+                            accountUrl += "/" + id;
+                        return [4, api.get(accountUrl)];
+                    case 1:
+                        data = _a.sent();
+                        return [2, new Account(data, api)];
                 }
-                return [2, Account_1.default.fetch(id, api)];
             });
         });
     };
-    return WyreClient;
-}(Authed_1.default));
-exports.default = WyreClient;
+    Account.prototype.createTransfer = function (params) {
+        return __awaiter(this, void 0, void 0, function () {
+            var transfer;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, Transfer_1.default.create(params, this.api)];
+                    case 1:
+                        transfer = _a.sent();
+                        return [2, transfer];
+                }
+            });
+        });
+    };
+    Account.prototype.getTransfers = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.api.get('transfers')];
+                    case 1:
+                        data = (_a.sent()).data;
+                        return [2, data.map(function (transferData) { return new Transfer_1.default(transferData, _this.api); })];
+                }
+            });
+        });
+    };
+    return Account;
+}(Model_1.default));
+exports.default = Account;

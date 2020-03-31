@@ -1,14 +1,9 @@
-import 'es6-shim';
-export declare class WyreClient {
-    private config;
-    private masqueradeTarget?;
-    constructor(config: any, masqueradeTarget?: string);
-    get(path: string, params?: any, options?: any): Promise<any>;
-    post(path: string, body?: any, options?: any): Promise<any>;
-    put(path: string, body?: any, options?: any): Promise<any>;
-    delete(path: string, body?: any, options?: any): Promise<any>;
-    masqueraded(target: string): WyreClient;
-    private request;
-    private buildRequestOptions;
-    private buildSignature;
+import Authed from './Authed';
+import Account from './Account';
+import type { Config } from './Authed';
+export default class WyreClient extends Authed {
+    private readonly api;
+    constructor(config: Config);
+    fetchAccount(id?: string, masquerade?: boolean): Promise<Account>;
 }
+//# sourceMappingURL=wyre.d.ts.map

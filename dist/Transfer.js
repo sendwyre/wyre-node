@@ -49,33 +49,47 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Authed_1 = require("./Authed");
-var Account_1 = require("./Account");
+var Model_1 = require("./Model");
 var API_1 = require("./utils/API");
-var WyreClient = (function (_super) {
-    __extends(WyreClient, _super);
-    function WyreClient(config) {
-        var _this = _super.call(this, config) || this;
-        _this.api = new API_1.default(config);
-        return _this;
+var Transfer = (function (_super) {
+    __extends(Transfer, _super);
+    function Transfer() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    WyreClient.prototype.fetchAccount = function (id, masquerade) {
-        if (masquerade === void 0) { masquerade = false; }
+    Transfer.verifyCreateParams = function (params) {
+        if (params.sourceAmount && params.destinationAmount)
+            throw new Error('Cannot have both source and destination amounts defined.');
+    };
+    Transfer.create = function (params, api) {
+        if (api === void 0) { api = new API_1.default(); }
         return __awaiter(this, void 0, void 0, function () {
-            var api, newConfig;
+            var data;
             return __generator(this, function (_a) {
-                api = this.api;
-                if (!!id && masquerade) {
-                    if (!this.isAuthed)
-                        throw new Error('Cannot masquerade with no authorization.');
-                    newConfig = Object.assign({}, this.config);
-                    newConfig.auth.masqueradeTarget = id;
-                    api = new API_1.default(newConfig);
+                switch (_a.label) {
+                    case 0:
+                        this.verifyCreateParams(params);
+                        return [4, api.post('transfers', params)];
+                    case 1:
+                        data = _a.sent();
+                        return [2, new Transfer(data, api)];
                 }
-                return [2, Account_1.default.fetch(id, api)];
             });
         });
     };
-    return WyreClient;
-}(Authed_1.default));
-exports.default = WyreClient;
+    Transfer.prototype.confirm = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.api.post("transfers/" + this.id + "/confirm")];
+                    case 1:
+                        data = _a.sent();
+                        this.set(data);
+                        return [2];
+                }
+            });
+        });
+    };
+    return Transfer;
+}(Model_1.default));
+exports.default = Transfer;
