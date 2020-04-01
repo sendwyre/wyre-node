@@ -7,7 +7,7 @@ import type { ICreateTransferParams, ITransferHistoryResponse } from './Transfer
 
 export default class Account extends Model<Account> implements IAccount {
   public id: string
-  public status: string
+  public status: 'OPEN' | 'PENDING' | 'APPROVED'
   public type: string
   public country: string
   public createdAt: number
@@ -36,6 +36,12 @@ export default class Account extends Model<Account> implements IAccount {
     const account = new Account(data, api)
     await account.fetchPaymentMethods()
     return account
+  }
+
+  public async save(): Promise<void> {
+    if (!this.data.isChanged) return
+
+    await this.api.post(`accounts/${this.id}`, this.data.updatedValues)
   }
 
   public async fetchPaymentMethods(): Promise<Array<PaymentMethod>> {

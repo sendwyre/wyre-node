@@ -104,6 +104,21 @@ var Account = (function (_super) {
             });
         });
     };
+    Account.prototype.save = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.data.isChanged)
+                            return [2];
+                        return [4, this.api.post("accounts/" + this.id, this.data.updatedValues)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     Account.prototype.fetchPaymentMethods = function () {
         return __awaiter(this, void 0, void 0, function () {
             var paymentMethods;

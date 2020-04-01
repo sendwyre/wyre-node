@@ -1,12 +1,13 @@
 import Api from './utils/Api'
+import Data from './Model/Data'
 
 export default abstract class Model<T> {
   public readonly api: Api
-  public data: object = {}
+  public readonly data: Data
 
   constructor(data: object, api: Api) {
-    this.set(data)
     this.api = api
+    this.data = new Data(data)
 
     const proxy = new Proxy(this, new ModelProxyHandler())
 
@@ -16,13 +17,7 @@ export default abstract class Model<T> {
   public set(data: object): void
   public set(key: PropertyKey, value: any): void
   public set(key: PropertyKey | object, value?: any): void {
-    if (typeof key === 'object') {
-      for (const [ k, v ] of Object.entries(key)) {
-        this.data[k] = v
-      }
-    } else {
-      this.data[key] = value
-    }
+    this.data.set(key, value)
   }
 }
 

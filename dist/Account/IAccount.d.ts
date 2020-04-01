@@ -4,7 +4,7 @@ export interface IAccount extends IAccountResponse {
 }
 export interface IAccountResponse {
     id: string;
-    status: string;
+    status: 'OPEN' | 'PENDING' | 'APPROVED';
     type: string;
     country: string;
     createdAt: number;
@@ -40,7 +40,7 @@ declare type IProfileFieldValueAddress = {
     country: string | 'US';
 };
 declare type IProfileFieldValueDocument = {};
-declare type IProfileFieldStatus = 'OPEN' | 'PENDING' | 'NULL';
+declare type IProfileFieldStatus = 'OPEN' | 'PENDING' | 'APPROVED' | 'NULL';
 export interface ICreateAccountParams {
     type: string;
     country: string;

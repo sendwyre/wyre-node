@@ -1,23 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var Data_1 = require("./Model/Data");
 var Model = (function () {
     function Model(data, api) {
-        this.data = {};
-        this.set(data);
         this.api = api;
+        this.data = new Data_1.default(data);
         var proxy = new Proxy(this, new ModelProxyHandler());
         return proxy;
     }
     Model.prototype.set = function (key, value) {
-        if (typeof key === 'object') {
-            for (var _i = 0, _a = Object.entries(key); _i < _a.length; _i++) {
-                var _b = _a[_i], k = _b[0], v = _b[1];
-                this.data[k] = v;
-            }
-        }
-        else {
-            this.data[key] = value;
-        }
+        this.data.set(key, value);
     };
     return Model;
 }());

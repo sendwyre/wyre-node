@@ -6,7 +6,7 @@ import type { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } 
 import type { ICreateTransferParams } from './Transfer/ITransfer';
 export default class Account extends Model<Account> implements IAccount {
     id: string;
-    status: string;
+    status: 'OPEN' | 'PENDING' | 'APPROVED';
     type: string;
     country: string;
     createdAt: number;
@@ -27,6 +27,7 @@ export default class Account extends Model<Account> implements IAccount {
     static create(api: Api, params: ICreateAccountParams): Promise<Account>;
     static fetch(api: Api, id: string): Promise<Account>;
     protected static postFetch(data: IAccountResponse, api: Api): Promise<Account>;
+    save(): Promise<void>;
     fetchPaymentMethods(): Promise<Array<PaymentMethod>>;
     createTransfer(params: ICreateTransferParams): Promise<Transfer>;
     fetchTransfers(): Promise<Array<Transfer>>;
