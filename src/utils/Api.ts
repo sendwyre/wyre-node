@@ -32,6 +32,16 @@ export default class Api {
       throw new Error('Must be authenticated for this endpoint.')
   }
 
+  public masqueradeAs(id: string): Api {
+    if (!this.isAuthed)
+      throw new Error('Cannot masquerade with no authorization.')
+
+    const newConfig = Object.assign({}, this.config)
+    newConfig.auth.masqueradeTarget = id
+
+    return new Api(newConfig)
+  }
+
   public get<T extends any>(path: string, params?: object, options?: IApiOptions): Promise<T> {
     return this.request<T>('GET', path, params, options)
   }

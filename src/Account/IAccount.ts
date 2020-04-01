@@ -1,6 +1,9 @@
 import type { IPaymentMethod } from '../PaymentMethod/IPaymentMethod'
 
-export interface IAccount {
+export interface IAccount extends IAccountResponse {
+  paymentMethods: Array<IPaymentMethod>
+}
+export interface IAccountResponse {
   id: string
   status: string
   type: string
@@ -19,13 +22,36 @@ export interface IAccount {
     ETH: number
   }
   profileFields: Array<IProfileField>
-  paymentMethods: Array<IPaymentMethod>
 }
 
 export interface IProfileField {
-  fieldId: string
-  fieldType: string
-  value: string | object | null
+  fieldId: IProfileFieldId
+  fieldType: IProfileFieldType
+  value: string | object | IProfileFieldValueAddress | Array<IProfileFieldValueDocument> | null
   note: string | null
-  status: string
+  status: IProfileFieldStatus
+}
+type IProfileFieldId = 'individualCellphoneNumber' | 'individualEmail' | 'individualLegalName' | 'individualDateOfBirth' | 'individualSsn' | 'individualResidenceAddress' | 'individualGovernmentId' | 'individualSourceOfFunds'
+type IProfileFieldType = 'CELLPHONE' | 'EMAIL' | 'STRING' | 'DATE' | 'ADDRESS' | 'DOCUMENT' | 'PAYMENT_METHOD'
+type IProfileFieldValueAddress = {
+  street1: string
+  street2?: string
+  city: string
+  state: string
+  postalCode: string
+  country: string | 'US'
+}
+// TODO: unknown values
+type IProfileFieldValueDocument = {
+
+}
+type IProfileFieldStatus = 'OPEN' | 'PENDING' | 'NULL'
+
+export interface ICreateAccountParams {
+  type: string
+  country: string
+  profileFields: Array<IProfileField>
+  referrerAccountId?: string
+  subaccount?: boolean
+  disableEmail?: boolean
 }

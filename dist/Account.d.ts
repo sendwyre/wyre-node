@@ -2,7 +2,7 @@ import Model from './Model';
 import Transfer from './Transfer';
 import PaymentMethod from './PaymentMethod';
 import Api from './utils/Api';
-import type { IAccount, IProfileField } from './Account/IAccount';
+import type { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } from './Account/IAccount';
 import type { ICreateTransferParams } from './Transfer/ITransfer';
 export default class Account extends Model<Account> implements IAccount {
     id: string;
@@ -24,8 +24,11 @@ export default class Account extends Model<Account> implements IAccount {
     };
     profileFields: Array<IProfileField>;
     paymentMethods: Array<PaymentMethod>;
-    static fetch(id: string, api: Api): Promise<Account>;
+    static create(api: Api, params: ICreateAccountParams): Promise<Account>;
+    static fetch(api: Api, id: string): Promise<Account>;
+    protected static postFetch(data: IAccountResponse, api: Api): Promise<Account>;
+    fetchPaymentMethods(): Promise<Array<PaymentMethod>>;
     createTransfer(params: ICreateTransferParams): Promise<Transfer>;
-    getTransfers(): Promise<Array<Transfer>>;
+    fetchTransfers(): Promise<Array<Transfer>>;
 }
 //# sourceMappingURL=Account.d.ts.map

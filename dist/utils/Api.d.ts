@@ -5,6 +5,7 @@ export default class Api {
     constructor(config?: IApiConfig);
     get isAuthed(): boolean;
     requireAuthed(): void;
+    masqueradeAs(id: string): Api;
     get<T extends any>(path: string, params?: object, options?: IApiOptions): Promise<T>;
     post<T extends any>(path: string, body?: object, options?: IApiOptions): Promise<T>;
     put<T extends any>(path: string, body?: object, options?: IApiOptions): Promise<T>;

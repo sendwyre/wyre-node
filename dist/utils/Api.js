@@ -40,6 +40,13 @@ var Api = (function () {
         if (!this.isAuthed)
             throw new Error('Must be authenticated for this endpoint.');
     };
+    Api.prototype.masqueradeAs = function (id) {
+        if (!this.isAuthed)
+            throw new Error('Cannot masquerade with no authorization.');
+        var newConfig = Object.assign({}, this.config);
+        newConfig.auth.masqueradeTarget = id;
+        return new Api(newConfig);
+    };
     Api.prototype.get = function (path, params, options) {
         return this.request('GET', path, params, options);
     };

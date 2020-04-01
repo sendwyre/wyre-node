@@ -42,20 +42,20 @@ var WyreClient = (function () {
     function WyreClient(config) {
         this.api = new Api_1.default(config);
     }
+    WyreClient.prototype.createAccount = function (params) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, Account_1.default.create(this.api, params)];
+            });
+        });
+    };
     WyreClient.prototype.fetchAccount = function (id, masquerade) {
         if (masquerade === void 0) { masquerade = false; }
         return __awaiter(this, void 0, void 0, function () {
-            var api, newConfig;
+            var api;
             return __generator(this, function (_a) {
-                api = this.api;
-                if (masquerade) {
-                    if (!this.api.isAuthed)
-                        throw new Error('Cannot masquerade with no authorization.');
-                    newConfig = Object.assign({}, this.api.config);
-                    newConfig.auth.masqueradeTarget = id;
-                    api = new Api_1.default(newConfig);
-                }
-                return [2, Account_1.default.fetch(id, api)];
+                api = masquerade ? this.api.masqueradeAs(id) : this.api;
+                return [2, Account_1.default.fetch(api, id)];
             });
         });
     };

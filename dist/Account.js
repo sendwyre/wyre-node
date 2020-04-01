@@ -57,22 +57,63 @@ var Account = (function (_super) {
     function Account() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Account.fetch = function (id, api) {
+    Account.create = function (api, params) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, account, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        api.requireAuthed();
+                        return [4, api.post('accounts', params)];
+                    case 1:
+                        data = _a.sent();
+                        if (params.subaccount)
+                            api = api.masqueradeAs(data.id);
+                        return [2, this.postFetch(data, api)];
+                }
+            });
+        });
+    };
+    Account.fetch = function (api, id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         api.requireAuthed();
                         return [4, api.get("accounts/" + id)];
                     case 1:
-                        data = _b.sent();
+                        data = _a.sent();
+                        return [2, this.postFetch(data, api)];
+                }
+            });
+        });
+    };
+    Account.postFetch = function (data, api) {
+        return __awaiter(this, void 0, void 0, function () {
+            var account;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
                         account = new Account(data, api);
-                        _a = account;
-                        return [4, PaymentMethod_1.default.fetchAll(api)];
-                    case 2:
-                        _a.paymentMethods = _b.sent();
+                        return [4, account.fetchPaymentMethods()];
+                    case 1:
+                        _a.sent();
                         return [2, account];
+                }
+            });
+        });
+    };
+    Account.prototype.fetchPaymentMethods = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var paymentMethods;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, PaymentMethod_1.default.fetchAll(this.api)];
+                    case 1:
+                        paymentMethods = _a.sent();
+                        this.paymentMethods = paymentMethods;
+                        return [2, paymentMethods];
                 }
             });
         });
@@ -90,7 +131,7 @@ var Account = (function (_super) {
             });
         });
     };
-    Account.prototype.getTransfers = function () {
+    Account.prototype.fetchTransfers = function () {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             var _this = this;

@@ -1,6 +1,7 @@
 import Account from './Account'
 import Api from './utils/Api'
 import type { IApiConfig } from './utils/API/IApiConfig'
+import type { ICreateAccountParams } from './Account/IAccount'
 
 export default class WyreClient {
   private readonly api: Api
@@ -9,18 +10,12 @@ export default class WyreClient {
     this.api = new Api(config)
   }
 
+  public async createAccount(params: ICreateAccountParams): Promise<Account> {
+    return Account.create(this.api, params)
+  }
+
   public async fetchAccount(id: string, masquerade = false): Promise<Account> {
-    let api = this.api
-    if (masquerade) {
-      if (!this.api.isAuthed)
-        throw new Error('Cannot masquerade with no authorization.')
-
-      const newConfig = Object.assign({}, this.api.config)
-      newConfig.auth.masqueradeTarget = id
-
-      api = new Api(newConfig)
-    }
-
-    return Account.fetch(id, api)
+    const api = masquerade ? this.api.masqueradeAs(id) : this.api
+    return Account.fetch(api, id)
   }
 }

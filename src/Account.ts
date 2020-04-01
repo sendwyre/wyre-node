@@ -2,7 +2,7 @@ import Model from './Model'
 import Transfer from './Transfer'
 import PaymentMethod from './PaymentMethod'
 import Api from './utils/Api'
-import type { IAccount, IProfileField } from './Account/IAccount'
+import type { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } from './Account/IAccount'
 import type { ICreateTransferParams, ITransferHistoryResponse } from './Transfer/ITransfer'
 
 export default class Account extends Model<Account> implements IAccount {
@@ -17,14 +17,31 @@ export default class Account extends Model<Account> implements IAccount {
   public profileFields: Array<IProfileField>
   public paymentMethods: Array<PaymentMethod>
 
-  public static async fetch(id: string, api: Api): Promise<Account> {
+  public static async create(api: Api, params: ICreateAccountParams): Promise<Account> {
     api.requireAuthed()
 
-    const data = await api.get(`accounts/${id}`)
-    const account = new Account(data, api)
-    account.paymentMethods = await PaymentMethod.fetchAll(api)
+    const data = await api.post<IAccountResponse>('accounts', params)
+    if (params.subaccount)
+      api = api.masqueradeAs(data.id)
+    return this.postFetch(data, api)
+  }
 
+  public static async fetch(api: Api, id: string): Promise<Account> {
+    api.requireAuthed()
+
+    const data = await api.get<IAccountResponse>(`accounts/${id}`)
+    return this.postFetch(data, api)
+  }
+  protected static async postFetch(data: IAccountResponse, api: Api): Promise<Account> {
+    const account = new Account(data, api)
+    await account.fetchPaymentMethods()
     return account
+  }
+
+  public async fetchPaymentMethods(): Promise<Array<PaymentMethod>> {
+    const paymentMethods = await PaymentMethod.fetchAll(this.api)
+    this.paymentMethods = paymentMethods
+    return paymentMethods
   }
 
   public async createTransfer(params: ICreateTransferParams): Promise<Transfer> {
@@ -33,7 +50,7 @@ export default class Account extends Model<Account> implements IAccount {
     return transfer
   }
 
-  public async getTransfers(): Promise<Array<Transfer>> {
+  public async fetchTransfers(): Promise<Array<Transfer>> {
     const { data } = await this.api.get<ITransferHistoryResponse>('transfers')
     return data.map((transferData) => new Transfer(transferData, this.api))
   }
