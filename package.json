@@ -30,7 +30,9 @@
     "request": "2.88.0"
   },
   "devDependencies": {
+    "@types/node": "^13.9.1",
     "@types/request": "2.47.1",
-    "typescript": "2.9.2"
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
   }
 }

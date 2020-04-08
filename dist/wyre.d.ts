@@ -1,14 +1,17 @@
-import 'es6-shim';
-export declare class WyreClient {
-    private config;
-    private masqueradeTarget?;
-    constructor(config: any, masqueradeTarget?: string);
-    get(path: string, params?: any, options?: any): Promise<any>;
-    post(path: string, body?: any, options?: any): Promise<any>;
-    put(path: string, body?: any, options?: any): Promise<any>;
-    delete(path: string, body?: any, options?: any): Promise<any>;
-    masqueraded(target: string): WyreClient;
-    private request;
-    private buildRequestOptions;
-    private buildSignature;
+import Account from './Account';
+import Api from './utils/Api';
+import type { IApiConfig } from './utils/API/IApiConfig';
+import type { ICreateAccountParams } from './Account/IAccount';
+import type { IRates, IRatesPriced } from './wyre/IRates';
+export default class WyreClient {
+    readonly api: Api;
+    constructor(config: IApiConfig);
+    createAccount(params: ICreateAccountParams): Promise<Account>;
+    fetchAccount(): Promise<Account>;
+    fetchAccount(id: string, masquerade?: boolean): Promise<Account>;
+    fetchRates(): Promise<IRates>;
+    fetchRates(as: 'DIVISOR'): Promise<IRates>;
+    fetchRates(as: 'MULTIPLIER'): Promise<IRates>;
+    fetchRates(as: 'PRICED'): Promise<IRatesPriced>;
 }
+//# sourceMappingURL=wyre.d.ts.map
