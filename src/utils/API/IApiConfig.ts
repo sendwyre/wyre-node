@@ -1,5 +1,5 @@
 export interface IApiConfig extends IApiOptions {
-  version: string
+  version?: string
   uri?: string
   auth?: IAuth
 }

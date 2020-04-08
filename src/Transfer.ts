@@ -2,7 +2,7 @@ import Model from './Model'
 import Api from './utils/Api'
 import type { ITransferStatusHistory, ITransfer, ITransferFees, ICreateTransferParams } from './Transfer/ITransfer'
 
-export default class Transfer extends Model<Transfer> implements ITransfer {
+export default class Transfer extends Model<Transfer, ITransfer> implements ITransfer {
   public blockchainTx: string
   public cancelledAt: number
   public completedAt: number

@@ -11,6 +11,9 @@ var Model = (function () {
     Model.prototype.set = function (key, value) {
         this.data.set(key, value);
     };
+    Model.prototype.get = function (key) {
+        return this.data.get(key);
+    };
     return Model;
 }());
 exports.default = Model;
@@ -21,14 +24,14 @@ var ModelProxyHandler = (function () {
         return { enumerable: true, configurable: true };
     };
     ModelProxyHandler.prototype.set = function (target, key, value) {
-        key in target.data
+        key in target.data.updatedValues
             ? target.set(key, value)
             : target[key] = value;
         return true;
     };
     ModelProxyHandler.prototype.get = function (target, key) {
-        return key in target.data
-            ? target.data[key]
+        return key in target.data.updatedValues
+            ? target.get(key)
             : target[key];
     };
     return ModelProxyHandler;

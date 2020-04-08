@@ -1,7 +1,7 @@
 import Model from './Model';
 import type { IPaymentMethod } from './PaymentMethod/IPaymentMethod';
 import Api from './utils/Api';
-export default class PaymentMethod extends Model<PaymentMethod> implements IPaymentMethod {
+export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> implements IPaymentMethod {
     beneficiaryType: string;
     blockchains: object;
     brand: null;
@@ -17,7 +17,7 @@ export default class PaymentMethod extends Model<PaymentMethod> implements IPaym
     expirationDisplay: string;
     id: string;
     last4Digits: string;
-    linkType: string;
+    linkType: 'INTERNATIONAL_TRANSFER' | 'LOCAL_TRANSFER';
     liquidationBalances: object;
     maxCharge: null;
     maxDeposit: null;
@@ -29,7 +29,7 @@ export default class PaymentMethod extends Model<PaymentMethod> implements IPaym
     owner: string;
     rejectionMessage: string | null;
     srn: string;
-    status: string | null;
+    status: 'PENDING' | 'AWAITING_FOLLOWUP' | 'ACTIVE' | 'REJECTED';
     statusMessage: string;
     supportsDeposit: boolean;
     supportsPayment: boolean;

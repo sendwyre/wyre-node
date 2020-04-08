@@ -2,10 +2,10 @@ import Model from './Model'
 import Transfer from './Transfer'
 import PaymentMethod from './PaymentMethod'
 import Api from './utils/Api'
-import type { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } from './Account/IAccount'
-import type { ICreateTransferParams, ITransferHistoryResponse } from './Transfer/ITransfer'
+import { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } from './Account/IAccount'
+import { ICreateTransferParams, ITransferHistoryResponse } from './Transfer/ITransfer'
 
-export default class Account extends Model<Account> implements IAccount {
+export default class Account extends Model<Account, IAccount> implements IAccount {
   public id: string
   public status: 'OPEN' | 'PENDING' | 'APPROVED'
   public type: string
@@ -33,21 +33,14 @@ export default class Account extends Model<Account> implements IAccount {
     return this.postFetch(data, api)
   }
   protected static async postFetch(data: IAccountResponse, api: Api): Promise<Account> {
-    const account = new Account(data, api)
-    await account.fetchPaymentMethods()
-    return account
+    const paymentMethods = await PaymentMethod.fetchAll(api)
+    return new Account({ ...data, paymentMethods }, api)
   }
 
   public async save(): Promise<void> {
     if (!this.data.isChanged) return
 
     await this.api.post(`accounts/${this.id}`, this.data.updatedValues)
-  }
-
-  public async fetchPaymentMethods(): Promise<Array<PaymentMethod>> {
-    const paymentMethods = await PaymentMethod.fetchAll(this.api)
-    this.paymentMethods = paymentMethods
-    return paymentMethods
   }
 
   public async createTransfer(params: ICreateTransferParams): Promise<Transfer> {

@@ -4,11 +4,11 @@ export interface IPaymentMethod {
   createdAt: number
   name: string
   defaultCurrency: string
-  status: string | null
+  status: 'PENDING' | 'AWAITING_FOLLOWUP' | 'ACTIVE' | 'REJECTED'
   statusMessage: string
   // TODO: unknown type
   waitingPrompts: Array<any>
-  linkType: string
+  linkType: 'INTERNATIONAL_TRANSFER' | 'LOCAL_TRANSFER'
   beneficiaryType: string
   supportsDeposit: boolean
   nameOnMethod: string | null

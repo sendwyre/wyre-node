@@ -23,7 +23,7 @@ export default class Data {
     }
   }
 
-  public get<T>(key: string): T {
+  public get<T>(key: PropertyKey): T {
     return this.updatedValues[key]
   }
 }

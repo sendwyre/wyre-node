@@ -4,6 +4,6 @@ export default class Data {
     constructor(data: object);
     get isChanged(): boolean;
     set(key: PropertyKey | object, value?: any): void;
-    get<T>(key: string): T;
+    get<T>(key: PropertyKey): T;
 }
 //# sourceMappingURL=Data.d.ts.map
