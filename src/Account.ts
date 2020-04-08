@@ -1,6 +1,6 @@
 import Model from './Model'
 import Transfer from './Transfer'
-import PaymentMethod from './PaymentMethod'
+import PaymentMethod, { PAYMENT_TYPE } from './PaymentMethod'
 import Api from './utils/Api'
 import { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } from './Account/IAccount'
 import { ICreateTransferParams, ITransferHistoryResponse } from './Transfer/ITransfer'
@@ -8,7 +8,7 @@ import { ICreateTransferParams, ITransferHistoryResponse } from './Transfer/ITra
 export default class Account extends Model<Account, IAccount> implements IAccount {
   public id: string
   public status: 'OPEN' | 'PENDING' | 'APPROVED'
-  public type: string
+  public type: 'INDIVIDUAL' | 'BUSINESS'
   public country: string
   public createdAt: number
   public depositAddresses: { ETH: string; BTC: string }

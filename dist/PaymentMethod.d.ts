@@ -1,5 +1,5 @@
 import Model from './Model';
-import type { IPaymentMethod } from './PaymentMethod/IPaymentMethod';
+import type { IPaymentMethod, IPaymentMethodWireCreateParams } from './PaymentMethod/IPaymentMethod';
 import Api from './utils/Api';
 export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> implements IPaymentMethod {
     beneficiaryType: string;
@@ -35,6 +35,7 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
     supportsPayment: boolean;
     waitingPrompts: Array<any>;
     static createACH(api: Api, publicToken: string): Promise<PaymentMethod>;
+    static createWire(api: Api, params: IPaymentMethodWireCreateParams): Promise<PaymentMethod>;
     static fetchAll(api: Api): Promise<Array<PaymentMethod>>;
 }
 //# sourceMappingURL=PaymentMethod.d.ts.map

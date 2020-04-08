@@ -7,7 +7,7 @@ import { ICreateTransferParams } from './Transfer/ITransfer';
 export default class Account extends Model<Account, IAccount> implements IAccount {
     id: string;
     status: 'OPEN' | 'PENDING' | 'APPROVED';
-    type: string;
+    type: 'INDIVIDUAL' | 'BUSINESS';
     country: string;
     createdAt: number;
     depositAddresses: {

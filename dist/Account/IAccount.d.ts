@@ -5,7 +5,7 @@ export interface IAccount extends IAccountResponse {
 export interface IAccountResponse {
     id: string;
     status: 'OPEN' | 'PENDING' | 'APPROVED';
-    type: string;
+    type: 'INDIVIDUAL' | 'BUSINESS';
     country: string;
     createdAt: number;
     depositAddresses: {

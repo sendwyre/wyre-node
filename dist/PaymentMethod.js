@@ -57,17 +57,34 @@ var PaymentMethod = (function (_super) {
     }
     PaymentMethod.createACH = function (api, publicToken) {
         return __awaiter(this, void 0, void 0, function () {
-            var body, data;
+            var params, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         api.requireAuthed();
-                        body = {
+                        params = {
                             publicToken: publicToken,
                             paymentMethodType: 'LOCAL_TRANSFER',
                             country: 'US'
                         };
-                        return [4, api.post('paymentMethods', body, { version: '2' })];
+                        return [4, api.post('paymentMethods', params, { version: '2' })];
+                    case 1:
+                        data = _a.sent();
+                        return [2, new PaymentMethod(data, api)];
+                }
+            });
+        });
+    };
+    PaymentMethod.createWire = function (api, params) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        api.requireAuthed();
+                        params.paymentMethodType = 'INTERNATIONAL_TRANSFER';
+                        params.paymentType = 'LOCAL_BANK_WIRE';
+                        return [4, api.post('paymentMethods', params, { version: '2' })];
                     case 1:
                         data = _a.sent();
                         return [2, new PaymentMethod(data, api)];

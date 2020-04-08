@@ -45,6 +45,31 @@ export interface IPaymentMethodsResponse {
 
 export interface IPaymentMethodACHCreateParams {
   publicToken: string
-  paymentMethodType: string
+  paymentMethodType: 'LOCAL_TRANSFER'
+  country: 'US'
+}
+
+export interface IPaymentMethodWireCreateParams extends IPaymentMethodWireCreateParamsInternal {
   country: string
+  currency: string
+  beneficiaryType: 'INDIVIDUAL' | 'BUSINESS'
+  beneficiaryAddress: string
+  beneficiaryAddress2?: string
+  beneficiaryCity:  string
+  beneficiaryState:  string
+  beneficiaryPostal:  string
+  beneficiaryPhoneNumber:  string
+  beneficiaryDobDay:  string
+  beneficiaryDobMonth: string
+  beneficiaryDobYear: string
+  firstNameOnAccount:  string
+  lastNameOnAccount: string
+  accountNumber: string
+  routingNumber: string
+  accountType: 'CHECKING' | 'SAVINGS'
+  chargeablePM: boolean
+}
+export interface IPaymentMethodWireCreateParamsInternal {
+  paymentMethodType: 'INTERNATIONAL_TRANSFER'
+  paymentType: 'LOCAL_BANK_WIRE'
 }

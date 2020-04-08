@@ -1,5 +1,9 @@
 import Model from './Model'
-import type { IPaymentMethod, IPaymentMethodsResponse } from './PaymentMethod/IPaymentMethod'
+import type {
+  IPaymentMethod,
+  IPaymentMethodACHCreateParams,
+  IPaymentMethodsResponse, IPaymentMethodWireCreateParams
+} from './PaymentMethod/IPaymentMethod'
 import Api from './utils/Api'
 
 export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> implements IPaymentMethod {
@@ -39,12 +43,22 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
   public static async createACH(api: Api, publicToken: string): Promise<PaymentMethod> {
     api.requireAuthed()
 
-    const body = {
+    const params: IPaymentMethodACHCreateParams = {
       publicToken,
       paymentMethodType: 'LOCAL_TRANSFER',
       country: 'US'
     }
-    const data = await api.post<IPaymentMethod>('paymentMethods', body, { version: '2' })
+    const data = await api.post<IPaymentMethod>('paymentMethods', params, { version: '2' })
+    return new PaymentMethod(data, api)
+  }
+
+  public static async createWire(api: Api, params: IPaymentMethodWireCreateParams): Promise<PaymentMethod> {
+    api.requireAuthed()
+
+    params.paymentMethodType = 'INTERNATIONAL_TRANSFER'
+    params.paymentType = 'LOCAL_BANK_WIRE'
+
+    const data = await api.post<IPaymentMethod>('paymentMethods', params, { version: '2' })
     return new PaymentMethod(data, api)
   }
 
