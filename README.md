@@ -35,22 +35,28 @@ for a more natural declaration.
 ## Quickstart
 
 ```js
-const WyreClient = require('@wyre/api').WyreClient
+const WyreClient = require('@wyre/api')
 
-let wyre = new WyreClient({
-    format: "json_numberstring",
-    apiKey: "AK-AAAAAAA-AAAAAAA-AAAAAAA-AAAAAAA",
-    secretKey: "SK-AAAAAAA-AAAAAAA-AAAAAAA-AAAAAAA"
-    // baseUrl: "https://api.testwyre.com" // todo uncomment this line to use the testwyre environment
-});
-
-wyre.get("/v2/account")
-    .then(account => {
-        console.log("I am Wyre account ", account.id);
+const client = new WyreClient({
+    auth: {
+        apiKey: 'AK-api-key',
+        secretKey: 'SK-secret-key'
     },
-    err => {
+    version: '3', // Keep this unless doing manual api calls
+    // uri: 'https://api.testwyre.com', // Uncomment this line to use the testwyre environment
+    format: 'json_numberstring',
+    headers: {},
+    qs: {}
+})
+
+// Get account from auth credentials
+client.fetchAccount()
+    .then((account) => {
+        console.log("I am Wyre account ", account.id);
+    })
+    .catch((err) => {
         console.log("Problems, cap'n: ", err);
-    });
+    })
 ```
 
 You're all set to begin coding!
@@ -59,7 +65,7 @@ You're all set to begin coding!
 
 Attempt a $10 USD->BTC conversion:
 ```js
-wyre.post("/transfers", {
+account.createTransfer({
     sourceAmount: "10",
     sourceCurrency: "USD",
     destCurrency: "BTC",
@@ -71,7 +77,7 @@ Upload a document:
 ```js
 var fs = require('fs');
 let my_id = fs.readFileSync('./my_id.jpg');
-wyre.post('/v3/accounts/' + account.id + '/individualGovernmentId', 
+client.api.post('accounts/' + account.id + '/individualGovernmentId', 
         my_id, 
         { headers: { 'Content-Type': 'image/jpeg' }})
     .then(successCallback, errorCallback);
@@ -89,11 +95,15 @@ Constructor parameters:
 
 | parameter | description
 | ----------|--------------
-| apiKey    | your environment-specific Wyre API key
-| secretKey | your environment-specific Wyre API secret
-| baseUrl   | specifies the Wyre environment you'd like to use. please use either:<br>`https://api.sendwyre.com` for production<br>`https://api.testwyre.com` for testwyre
+| auth.apiKey    | your environment-specific Wyre API key
+| auth.secretKey | your environment-specific Wyre API secret
+| auth.masqueradeTarget | sub-account id to masquerade as
+| uri   | specifies the Wyre environment you'd like to use. please use either:<br>`https://api.sendwyre.com` for production<br>`https://api.testwyre.com` for testwyre
+| version   | specifies the Wyre API version to use. Defaults to 3.
 | format    | the data format you're requesting.<br>`json` for straight JSON <br>`json_numberstring` for JSON with all decimals as strings (see [above](#regarding-decimal-numbers)]  
-| options   | options that are passed to the underlying [Request](https://github.com/request/request) for _every_ request
+| headers   | headers that are passed to the underlying [Request](https://github.com/request/request) for _every_ request
+| qs   | query string parameters that are passed to the underlying [Request](https://github.com/request/request) for _every_ request
+| timeout   | timeout limit for API request in milliseconds
 
 Note that the ability to override options used by the [Request](https://github.com/request/request) client is 
 available both generally as well as per-request.
@@ -106,10 +116,10 @@ or per-request (as with all options).
 Each of these methods performs a single Wyre API request and returns a promise for the resulting API response.
 
 ```js
-wyre.get(path, parameters, options)
-wyre.post(path, body, options)
-wyre.put(path, body, options)
-wyre.delete(path, body, options)
+client.api.get(path, parameters, options)
+client.api.post(path, body, options)
+client.api.put(path, body, options)
+client.api.delete(path, body, options)
 ```
 
 ### Masquerading API
@@ -118,14 +128,16 @@ This is an alternative to supplying the `masqueradeAs` parameter as a query para
 
 ```js
 // init the wyre client as usual
-let wyre = new WyreClient({ /* your master api access setup here */ });
+const client = new WyreClient({ /* your master api access setup here */ });
 
-// create another sub-client authenticated as a particular user
-let user1_wyre = wyre.masqueraded('AC-ABCDE12345');
-
-// now use that client as normal!
-user1_wyre.get('/v3/accounts/AC-ABCDE12345').then(successCallback, failureCallback);
-
+// Get sub-account with masquerade = true
+client.fetchAccount('AC-sub-account-id', true)
+    .then((account) => {
+        console.log("I am Wyre sub-account ", account.id);
+    })
+    .catch((err) => {
+        console.log("Problems, cap'n: ", err);
+    })
 ```
 
 ### Errors
