@@ -52,10 +52,19 @@ var WyreClient = (function () {
     WyreClient.prototype.fetchAccount = function (id, masquerade) {
         if (masquerade === void 0) { masquerade = false; }
         return __awaiter(this, void 0, void 0, function () {
-            var api;
+            var api, data;
             return __generator(this, function (_a) {
-                api = masquerade ? this.api.masqueradeAs(id) : this.api;
-                return [2, Account_1.default.fetch(api, id)];
+                switch (_a.label) {
+                    case 0:
+                        api = masquerade ? this.api.masqueradeAs(id) : this.api;
+                        if (!!id) return [3, 2];
+                        return [4, api.get("account", null, { version: '2' })];
+                    case 1:
+                        data = _a.sent();
+                        id = data.id;
+                        _a.label = 2;
+                    case 2: return [2, Account_1.default.fetch(api, id)];
+                }
             });
         });
     };

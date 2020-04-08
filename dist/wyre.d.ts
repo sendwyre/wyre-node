@@ -7,6 +7,7 @@ export default class WyreClient {
     readonly api: Api;
     constructor(config: IApiConfig);
     createAccount(params: ICreateAccountParams): Promise<Account>;
+    fetchAccount(): Promise<Account>;
     fetchAccount(id: string, masquerade?: boolean): Promise<Account>;
     fetchRates(): Promise<IRates>;
     fetchRates(as: 'DIVISOR'): Promise<IRates>;

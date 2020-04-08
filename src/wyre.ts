@@ -15,8 +15,17 @@ export default class WyreClient {
     return Account.create(this.api, params)
   }
 
-  public async fetchAccount(id: string, masquerade = false): Promise<Account> {
+  public async fetchAccount(): Promise<Account>
+  public async fetchAccount(id: string, masquerade?: boolean): Promise<Account>
+  public async fetchAccount(id?: string, masquerade = false): Promise<Account> {
     const api = masquerade ? this.api.masqueradeAs(id) : this.api
+
+    // TODO: Update V3 of API to return account from auth params
+    if (!id) {
+      const data = await api.get(`account`, null, { version: '2' })
+      id = data.id
+    }
+
     return Account.fetch(api, id)
   }
 
