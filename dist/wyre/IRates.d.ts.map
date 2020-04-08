@@ -1,0 +1,1 @@
+{"version":3,"file":"IRates.d.ts","sourceRoot":"","sources":["../../src/wyre/IRates.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,MAAM;IACrB,CAAC,UAAU,EAAE,MAAM,GAAG,MAAM,CAAA;CAC7B;AAED,MAAM,WAAW,YAAY;IAC3B,CAAC,UAAU,EAAE,MAAM,GAAG;QACpB,CAAC,MAAM,EAAE,MAAM,GAAG,MAAM,CAAA;KACzB,CAAA;CACF"}

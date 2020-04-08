@@ -1,5 +1,6 @@
 import Model from './Model'
 import Api from './utils/Api'
+import PaymentMethod from './PaymentMethod'
 import type {
   ITransferStatusHistory,
   ITransfer,
@@ -7,7 +8,6 @@ import type {
   ICreateTransferParams,
   ITransferHistoryResponse
 } from './Transfer/ITransfer'
-import PaymentMethod from './PaymentMethod'
 
 export default class Transfer extends Model<Transfer, ITransfer> implements ITransfer {
   public blockchainTx: string

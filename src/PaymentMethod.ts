@@ -1,10 +1,10 @@
 import Model from './Model'
+import Api from './utils/Api'
 import type {
   IPaymentMethod,
   IPaymentMethodACHCreateParams, IPaymentMethodAttachBlockchainOptions, IPaymentMethodBlockchain,
   IPaymentMethodsResponse, IPaymentMethodWireCreateParams
 } from './PaymentMethod/IPaymentMethod'
-import Api from './utils/Api'
 
 export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> implements IPaymentMethod {
   public beneficiaryType: string

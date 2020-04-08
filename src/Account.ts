@@ -2,8 +2,9 @@ import Model from './Model'
 import Transfer from './Transfer'
 import PaymentMethod from './PaymentMethod'
 import Api from './utils/Api'
-import { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } from './Account/IAccount'
-import { ICreateTransferParams } from './Transfer/ITransfer'
+import type { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } from './Account/IAccount'
+import type { ICreateTransferParams } from './Transfer/ITransfer'
+import type { ILimits } from './wyre/ILimits'
 
 export default class Account extends Model<Account, IAccount> implements IAccount {
   public id: string
@@ -51,5 +52,11 @@ export default class Account extends Model<Account, IAccount> implements IAccoun
 
   public async fetchTransfers(): Promise<Array<Transfer>> {
     return Transfer.fetchAll(this.api)
+  }
+
+  public async fetchLimits(): Promise<ILimits> {
+    this.api.requireAuthed()
+
+    return this.api.get('limits')
   }
 }

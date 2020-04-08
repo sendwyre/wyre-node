@@ -1,6 +1,6 @@
 import Model from './Model';
-import type { IPaymentMethod, IPaymentMethodAttachBlockchainOptions, IPaymentMethodBlockchain, IPaymentMethodWireCreateParams } from './PaymentMethod/IPaymentMethod';
 import Api from './utils/Api';
+import type { IPaymentMethod, IPaymentMethodAttachBlockchainOptions, IPaymentMethodBlockchain, IPaymentMethodWireCreateParams } from './PaymentMethod/IPaymentMethod';
 export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> implements IPaymentMethod {
     beneficiaryType: string;
     blockchains: object;

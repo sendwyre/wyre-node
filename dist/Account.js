@@ -148,6 +148,14 @@ var Account = (function (_super) {
             });
         });
     };
+    Account.prototype.fetchLimits = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.api.requireAuthed();
+                return [2, this.api.get('limits')];
+            });
+        });
+    };
     return Account;
 }(Model_1.default));
 exports.default = Account;
