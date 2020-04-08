@@ -4,7 +4,7 @@ import type { IApiConfig } from './utils/API/IApiConfig'
 import type { ICreateAccountParams } from './Account/IAccount'
 
 export default class WyreClient {
-  private readonly api: Api
+  public readonly api: Api
 
   constructor(config: IApiConfig) {
     this.api = new Api(config)
@@ -24,6 +24,6 @@ export default class WyreClient {
   public async fetchRates(as: 'MULTIPLIER'): Promise<{ [symbolPair: string]: number }>
   public async fetchRates(as: 'PRICED'): Promise<{ [symbolPair: string]: { [symbol: string]: number } }>
   public async fetchRates(as?: string): Promise<object> {
-    return this.api.get('rates', null, { qs: { as } })
+    return this.api.get('rates', { as })
   }
 }
