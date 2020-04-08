@@ -27,7 +27,9 @@ export default class Transfer extends Model<Transfer, ITransfer> implements ITra
     statusHistories: Array<ITransferStatusHistory>;
     totalFees: number;
     static verifyCreateParams(params: ICreateTransferParams): void;
-    static create(params: ICreateTransferParams, api: Api): Promise<Transfer>;
+    static create(api: Api, params: ICreateTransferParams): Promise<Transfer>;
+    static fetchAll(api: Api): Promise<Array<Transfer>>;
+    static fetch(api: Api, id: string): Promise<Transfer>;
     confirm(): Promise<void>;
 }
 //# sourceMappingURL=Transfer.d.ts.map

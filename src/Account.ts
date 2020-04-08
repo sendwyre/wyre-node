@@ -1,9 +1,9 @@
 import Model from './Model'
 import Transfer from './Transfer'
-import PaymentMethod, { PAYMENT_TYPE } from './PaymentMethod'
+import PaymentMethod from './PaymentMethod'
 import Api from './utils/Api'
 import { IAccount, IAccountResponse, ICreateAccountParams, IProfileField } from './Account/IAccount'
-import { ICreateTransferParams, ITransferHistoryResponse } from './Transfer/ITransfer'
+import { ICreateTransferParams } from './Transfer/ITransfer'
 
 export default class Account extends Model<Account, IAccount> implements IAccount {
   public id: string
@@ -44,13 +44,12 @@ export default class Account extends Model<Account, IAccount> implements IAccoun
   }
 
   public async createTransfer(params: ICreateTransferParams): Promise<Transfer> {
-    const transfer = await Transfer.create(params, this.api)
+    const transfer = await Transfer.create(this.api, params)
 
     return transfer
   }
 
   public async fetchTransfers(): Promise<Array<Transfer>> {
-    const { data } = await this.api.get<ITransferHistoryResponse>('transfers')
-    return data.map((transferData) => new Transfer(transferData, this.api))
+    return Transfer.fetchAll(this.api)
   }
 }

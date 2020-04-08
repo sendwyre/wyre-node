@@ -60,7 +60,7 @@ var Transfer = (function (_super) {
         if (params.sourceAmount && params.destinationAmount)
             throw new Error('Cannot have both source and destination amounts defined.');
     };
-    Transfer.create = function (params, api) {
+    Transfer.create = function (api, params) {
         return __awaiter(this, void 0, void 0, function () {
             var paymentMethods, isACH, data;
             return __generator(this, function (_a) {
@@ -81,6 +81,36 @@ var Transfer = (function (_super) {
                         _a.label = 3;
                     case 3: return [4, api.post('transfers', params)];
                     case 4:
+                        data = _a.sent();
+                        return [2, new Transfer(data, api)];
+                }
+            });
+        });
+    };
+    Transfer.fetchAll = function (api) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        api.requireAuthed();
+                        return [4, api.get('transfers')];
+                    case 1:
+                        data = (_a.sent()).data;
+                        return [2, data.map(function (transferData) { return new Transfer(transferData, api); })];
+                }
+            });
+        });
+    };
+    Transfer.fetch = function (api, id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        api.requireAuthed();
+                        return [4, api.get("transfers/" + id)];
+                    case 1:
                         data = _a.sent();
                         return [2, new Transfer(data, api)];
                 }

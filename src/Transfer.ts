@@ -1,6 +1,12 @@
 import Model from './Model'
 import Api from './utils/Api'
-import type { ITransferStatusHistory, ITransfer, ITransferFees, ICreateTransferParams } from './Transfer/ITransfer'
+import type {
+  ITransferStatusHistory,
+  ITransfer,
+  ITransferFees,
+  ICreateTransferParams,
+  ITransferHistoryResponse
+} from './Transfer/ITransfer'
 import PaymentMethod from './PaymentMethod'
 
 export default class Transfer extends Model<Transfer, ITransfer> implements ITransfer {
@@ -34,7 +40,7 @@ export default class Transfer extends Model<Transfer, ITransfer> implements ITra
       throw new Error('Cannot have both source and destination amounts defined.')
   }
 
-  public static async create(params: ICreateTransferParams, api: Api): Promise<Transfer> {
+  public static async create(api: Api, params: ICreateTransferParams): Promise<Transfer> {
     api.requireAuthed()
 
     this.verifyCreateParams(params)
@@ -50,6 +56,20 @@ export default class Transfer extends Model<Transfer, ITransfer> implements ITra
 
     const data = await api.post<ITransfer>('transfers', params)
 
+    return new Transfer(data, api)
+  }
+
+  public static async fetchAll(api: Api): Promise<Array<Transfer>> {
+    api.requireAuthed()
+
+    const { data } = await api.get<ITransferHistoryResponse>('transfers')
+    return data.map((transferData) => new Transfer(transferData, api))
+  }
+
+  public static async fetch(api: Api, id: string): Promise<Transfer> {
+    api.requireAuthed()
+
+    const data = await api.get<ITransfer>(`transfers/${id}`)
     return new Transfer(data, api)
   }
 

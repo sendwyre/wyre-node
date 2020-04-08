@@ -133,7 +133,7 @@ var Account = (function (_super) {
             var transfer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, Transfer_1.default.create(params, this.api)];
+                    case 0: return [4, Transfer_1.default.create(this.api, params)];
                     case 1:
                         transfer = _a.sent();
                         return [2, transfer];
@@ -143,15 +143,8 @@ var Account = (function (_super) {
     };
     Account.prototype.fetchTransfers = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var data;
-            var _this = this;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, this.api.get('transfers')];
-                    case 1:
-                        data = (_a.sent()).data;
-                        return [2, data.map(function (transferData) { return new Transfer_1.default(transferData, _this.api); })];
-                }
+                return [2, Transfer_1.default.fetchAll(this.api)];
             });
         });
     };
