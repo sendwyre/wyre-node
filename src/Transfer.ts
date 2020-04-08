@@ -62,8 +62,20 @@ export default class Transfer extends Model<Transfer, ITransfer> implements ITra
   public static async fetchAll(api: Api): Promise<Array<Transfer>> {
     api.requireAuthed()
 
-    const { data } = await api.get<ITransferHistoryResponse>('transfers')
-    return data.map((transferData) => new Transfer(transferData, api))
+    const transfers: Array<Transfer> = []
+    let offset = 0
+    let length = 20
+    let hasMore = true
+    do {
+      const { data, recordsTotal, position} = await api.get<ITransferHistoryResponse>('transfers', { offset, length })
+      const mappedTransfers = data.map((transferData) => new Transfer(transferData, api))
+      transfers.push(...mappedTransfers)
+
+      hasMore = Math.ceil(recordsTotal / length) - 1 !== position
+      if (hasMore) offset += length
+    } while (hasMore)
+
+    return transfers
   }
 
   public static async fetch(api: Api, id: string): Promise<Transfer> {

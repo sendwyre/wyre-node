@@ -89,15 +89,29 @@ var Transfer = (function (_super) {
     };
     Transfer.fetchAll = function (api) {
         return __awaiter(this, void 0, void 0, function () {
-            var data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var transfers, offset, length, hasMore, _a, data, recordsTotal, position, mappedTransfers;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         api.requireAuthed();
-                        return [4, api.get('transfers')];
-                    case 1:
-                        data = (_a.sent()).data;
-                        return [2, data.map(function (transferData) { return new Transfer(transferData, api); })];
+                        transfers = [];
+                        offset = 0;
+                        length = 20;
+                        hasMore = true;
+                        _b.label = 1;
+                    case 1: return [4, api.get('transfers', { offset: offset, length: length })];
+                    case 2:
+                        _a = _b.sent(), data = _a.data, recordsTotal = _a.recordsTotal, position = _a.position;
+                        mappedTransfers = data.map(function (transferData) { return new Transfer(transferData, api); });
+                        transfers.push.apply(transfers, mappedTransfers);
+                        hasMore = Math.ceil(recordsTotal / length) - 1 !== position;
+                        if (hasMore)
+                            offset += length;
+                        _b.label = 3;
+                    case 3:
+                        if (hasMore) return [3, 1];
+                        _b.label = 4;
+                    case 4: return [2, transfers];
                 }
             });
         });
