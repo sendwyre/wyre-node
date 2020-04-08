@@ -66,4 +66,9 @@ export interface IPaymentMethodWireCreateParamsInternal {
     paymentMethodType: 'INTERNATIONAL_TRANSFER';
     paymentType: 'LOCAL_BANK_WIRE';
 }
+export declare type IPaymentMethodBlockchain = 'BTC' | 'ETH' | 'ALL';
+export interface IPaymentMethodAttachBlockchainOptions {
+    notifyUrl?: string;
+    muteMessages?: boolean;
+}
 //# sourceMappingURL=IPaymentMethod.d.ts.map

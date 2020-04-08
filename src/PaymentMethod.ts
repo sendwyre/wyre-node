@@ -1,7 +1,7 @@
 import Model from './Model'
 import type {
   IPaymentMethod,
-  IPaymentMethodACHCreateParams,
+  IPaymentMethodACHCreateParams, IPaymentMethodAttachBlockchainOptions, IPaymentMethodBlockchain,
   IPaymentMethodsResponse, IPaymentMethodWireCreateParams
 } from './PaymentMethod/IPaymentMethod'
 import Api from './utils/Api'
@@ -76,6 +76,15 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
 
     const data = await api.get<IPaymentMethod>(`paymentMethod/${id}`, null, { version: '2' })
     return new PaymentMethod(data, api)
+  }
+
+  public async attachBlockchain(blockchain: IPaymentMethodBlockchain | Array<IPaymentMethodBlockchain>, opts: IPaymentMethodAttachBlockchainOptions = {}) {
+    const params = {
+      ...opts,
+      blockchain: Array.isArray(blockchain) ? blockchain.join(',') : blockchain
+    }
+    const data = await this.api.get<IPaymentMethod>(`paymentMethod/${this.id}/attach`, params, { version: '2' })
+    this.set(data)
   }
 
   public async delete() {

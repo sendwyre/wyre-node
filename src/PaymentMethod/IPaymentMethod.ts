@@ -73,3 +73,9 @@ export interface IPaymentMethodWireCreateParamsInternal {
   paymentMethodType: 'INTERNATIONAL_TRANSFER'
   paymentType: 'LOCAL_BANK_WIRE'
 }
+
+export type IPaymentMethodBlockchain = 'BTC' | 'ETH' | 'ALL'
+export interface IPaymentMethodAttachBlockchainOptions {
+  notifyUrl?: string
+  muteMessages?: boolean
+}

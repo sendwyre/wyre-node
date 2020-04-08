@@ -1,5 +1,5 @@
 import Model from './Model';
-import type { IPaymentMethod, IPaymentMethodWireCreateParams } from './PaymentMethod/IPaymentMethod';
+import type { IPaymentMethod, IPaymentMethodAttachBlockchainOptions, IPaymentMethodBlockchain, IPaymentMethodWireCreateParams } from './PaymentMethod/IPaymentMethod';
 import Api from './utils/Api';
 export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> implements IPaymentMethod {
     beneficiaryType: string;
@@ -38,6 +38,7 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
     static createWire(api: Api, params: IPaymentMethodWireCreateParams): Promise<PaymentMethod>;
     static fetchAll(api: Api): Promise<Array<PaymentMethod>>;
     static fetch(api: Api, id: string): Promise<PaymentMethod>;
+    attachBlockchain(blockchain: IPaymentMethodBlockchain | Array<IPaymentMethodBlockchain>, opts?: IPaymentMethodAttachBlockchainOptions): Promise<void>;
     delete(): Promise<void>;
 }
 //# sourceMappingURL=PaymentMethod.d.ts.map
