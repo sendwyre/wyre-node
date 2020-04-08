@@ -65,10 +65,20 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
   public static async fetchAll(api: Api): Promise<Array<PaymentMethod>> {
     api.requireAuthed()
 
-    const { data: paymentMethods } = await api.get<IPaymentMethodsResponse>('paymentMethods', null, {
-      version: '2'
-    })
-    return paymentMethods.map((paymentData) => new PaymentMethod(paymentData, api))
+    const paymentMethods: Array<PaymentMethod> = []
+    let offset = 0
+    let length = 20
+    let hasMore = true
+    do {
+      const { data, recordsTotal, position} = await api.get<IPaymentMethodsResponse>('paymentMethods', { offset, length }, { version: '2' })
+      const methods = data.map((paymentData) => new PaymentMethod(paymentData, api))
+      paymentMethods.push(...methods)
+
+      hasMore = Math.ceil(recordsTotal / length) - 1 !== position
+      if (hasMore) offset += length
+    } while (hasMore)
+
+    return paymentMethods
   }
 
   public static async fetch(api: Api, id: string): Promise<PaymentMethod> {

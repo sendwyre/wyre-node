@@ -105,17 +105,29 @@ var PaymentMethod = (function (_super) {
     };
     PaymentMethod.fetchAll = function (api) {
         return __awaiter(this, void 0, void 0, function () {
-            var paymentMethods;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var paymentMethods, offset, length, hasMore, _a, data, recordsTotal, position, methods;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         api.requireAuthed();
-                        return [4, api.get('paymentMethods', null, {
-                                version: '2'
-                            })];
-                    case 1:
-                        paymentMethods = (_a.sent()).data;
-                        return [2, paymentMethods.map(function (paymentData) { return new PaymentMethod(paymentData, api); })];
+                        paymentMethods = [];
+                        offset = 0;
+                        length = 20;
+                        hasMore = true;
+                        _b.label = 1;
+                    case 1: return [4, api.get('paymentMethods', { offset: offset, length: length }, { version: '2' })];
+                    case 2:
+                        _a = _b.sent(), data = _a.data, recordsTotal = _a.recordsTotal, position = _a.position;
+                        methods = data.map(function (paymentData) { return new PaymentMethod(paymentData, api); });
+                        paymentMethods.push.apply(paymentMethods, methods);
+                        hasMore = Math.ceil(recordsTotal / length) - 1 !== position;
+                        if (hasMore)
+                            offset += length;
+                        _b.label = 3;
+                    case 3:
+                        if (hasMore) return [3, 1];
+                        _b.label = 4;
+                    case 4: return [2, paymentMethods];
                 }
             });
         });
