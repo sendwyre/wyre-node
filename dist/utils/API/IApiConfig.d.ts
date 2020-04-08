@@ -12,6 +12,7 @@ export interface IApiOptions {
     qs?: {
         [key: string]: string;
     };
+    timeout?: number;
 }
 export interface IAuth {
     secretKey: string;
