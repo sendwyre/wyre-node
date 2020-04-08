@@ -55,6 +55,26 @@ var PaymentMethod = (function (_super) {
     function PaymentMethod() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    PaymentMethod.createACH = function (api, publicToken) {
+        return __awaiter(this, void 0, void 0, function () {
+            var body, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        api.requireAuthed();
+                        body = {
+                            publicToken: publicToken,
+                            paymentMethodType: 'LOCAL_TRANSFER',
+                            country: 'US'
+                        };
+                        return [4, api.post('paymentMethods', body, { version: '2' })];
+                    case 1:
+                        data = _a.sent();
+                        return [2, new PaymentMethod(data, api)];
+                }
+            });
+        });
+    };
     PaymentMethod.fetchAll = function (api) {
         return __awaiter(this, void 0, void 0, function () {
             var paymentMethods;

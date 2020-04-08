@@ -1,3 +1,5 @@
+import PaymentMethod from '../PaymentMethod'
+
 export interface ITransfer {
   id: string
   sourceAmount: number
@@ -41,10 +43,10 @@ export interface ITransferStatusHistory {
 }
 
 export interface ICreateTransferParams {
-  source: string
+  source: string | PaymentMethod
   sourceCurrency: string
   sourceAmount?: string
-  destination: string
+  destination: string | PaymentMethod
   destinationCurrency: string
   destinationAmount?: string
   message?: string

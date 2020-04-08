@@ -1,6 +1,7 @@
 import Model from './Model'
 import Api from './utils/Api'
 import type { ITransferStatusHistory, ITransfer, ITransferFees, ICreateTransferParams } from './Transfer/ITransfer'
+import PaymentMethod from './PaymentMethod'
 
 export default class Transfer extends Model<Transfer, ITransfer> implements ITransfer {
   public blockchainTx: string
@@ -37,6 +38,15 @@ export default class Transfer extends Model<Transfer, ITransfer> implements ITra
     api.requireAuthed()
 
     this.verifyCreateParams(params)
+
+    // NOTE: Need to attach the suffix `:ach` if source is a LOCAL_TRANSFER
+    if (params.source instanceof PaymentMethod && params.source.linkType === 'LOCAL_TRANSFER') {
+      params.source = `${params.source.srn}:ach`
+    } else if (typeof params.source === 'string' && /paymentmethod:/.test(params.source)) {
+      const paymentMethods = await PaymentMethod.fetchAll(api)
+      const isACH = paymentMethods.some((method) => method.srn === params.source && method.linkType === 'LOCAL_TRANSFER')
+      params.source += ':ach'
+    }
 
     const data = await api.post<ITransfer>('transfers', params)
 

@@ -34,6 +34,7 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
     supportsDeposit: boolean;
     supportsPayment: boolean;
     waitingPrompts: Array<any>;
+    static createACH(api: Api, publicToken: string): Promise<PaymentMethod>;
     static fetchAll(api: Api): Promise<Array<PaymentMethod>>;
 }
 //# sourceMappingURL=PaymentMethod.d.ts.map

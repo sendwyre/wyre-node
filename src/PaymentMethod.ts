@@ -36,6 +36,18 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
   public supportsPayment: boolean
   public waitingPrompts: Array<any>
 
+  public static async createACH(api: Api, publicToken: string): Promise<PaymentMethod> {
+    api.requireAuthed()
+
+    const body = {
+      publicToken,
+      paymentMethodType: 'LOCAL_TRANSFER',
+      country: 'US'
+    }
+    const data = await api.post<IPaymentMethod>('paymentMethods', body, { version: '2' })
+    return new PaymentMethod(data, api)
+  }
+
   public static async fetchAll(api: Api): Promise<Array<PaymentMethod>> {
     api.requireAuthed()
 

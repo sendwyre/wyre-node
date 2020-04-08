@@ -42,3 +42,9 @@ export interface IPaymentMethodsResponse {
   recordsTotal: number
   position: number
 }
+
+export interface IPaymentMethodACHCreateParams {
+  publicToken: string
+  paymentMethodType: string
+  country: string
+}

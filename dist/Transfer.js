@@ -50,6 +50,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Model_1 = require("./Model");
+var PaymentMethod_1 = require("./PaymentMethod");
 var Transfer = (function (_super) {
     __extends(Transfer, _super);
     function Transfer() {
@@ -61,14 +62,25 @@ var Transfer = (function (_super) {
     };
     Transfer.create = function (params, api) {
         return __awaiter(this, void 0, void 0, function () {
-            var data;
+            var paymentMethods, isACH, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         api.requireAuthed();
                         this.verifyCreateParams(params);
-                        return [4, api.post('transfers', params)];
+                        if (!(params.source instanceof PaymentMethod_1.default && params.source.linkType === 'LOCAL_TRANSFER')) return [3, 1];
+                        params.source = params.source.srn + ":ach";
+                        return [3, 3];
                     case 1:
+                        if (!(typeof params.source === 'string' && /paymentmethod:/.test(params.source))) return [3, 3];
+                        return [4, PaymentMethod_1.default.fetchAll(api)];
+                    case 2:
+                        paymentMethods = _a.sent();
+                        isACH = paymentMethods.some(function (method) { return method.srn === params.source && method.linkType === 'LOCAL_TRANSFER'; });
+                        params.source += ':ach';
+                        _a.label = 3;
+                    case 3: return [4, api.post('transfers', params)];
+                    case 4:
                         data = _a.sent();
                         return [2, new Transfer(data, api)];
                 }
