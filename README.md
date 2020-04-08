@@ -93,15 +93,15 @@ Constructor parameters:
 | secretKey | your environment-specific Wyre API secret
 | baseUrl   | specifies the Wyre environment you'd like to use. please use either:<br>`https://api.sendwyre.com` for production<br>`https://api.testwyre.com` for testwyre
 | format    | the data format you're requesting.<br>`json` for straight JSON <br>`json_numberstring` for JSON with all decimals as strings (see [above](#regarding-decimal-numbers)]  
-| options   | options that are passed to the underlying [API](https://github.com/request/request) for _every_ request
+| options   | options that are passed to the underlying [Request](https://github.com/request/request) for _every_ request
 
-Note that the ability to override options used by the [API](https://github.com/request/request) client is 
+Note that the ability to override options used by the [Request](https://github.com/request/request) client is 
 available both generally as well as per-request.
 
 Timeouts may be adjusted via the `options.timeout` (expressed in milliseconds). This may be controlled via the constructor,
 or per-request (as with all options).
 
-### API API
+### Request API
 
 Each of these methods performs a single Wyre API request and returns a promise for the resulting API response.
 
