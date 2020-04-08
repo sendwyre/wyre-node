@@ -11,7 +11,7 @@ export default class Api {
 
   constructor(config?: IApiConfig) {
     const defaultConfig: IApiConfig = {
-      uri: 'https://api.testwyre.com',
+      uri: 'https://api.sendwyre.com',
       version: '3',
       format: 'json',
       qs: {},

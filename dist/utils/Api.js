@@ -19,7 +19,7 @@ require("es6-shim");
 var Api = (function () {
     function Api(config) {
         var defaultConfig = {
-            uri: 'https://api.testwyre.com',
+            uri: 'https://api.sendwyre.com',
             version: '3',
             format: 'json',
             qs: {},

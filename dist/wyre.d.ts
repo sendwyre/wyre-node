@@ -6,5 +6,19 @@ export default class WyreClient {
     constructor(config: IApiConfig);
     createAccount(params: ICreateAccountParams): Promise<Account>;
     fetchAccount(id: string, masquerade?: boolean): Promise<Account>;
+    fetchRates(): Promise<{
+        [symbolPair: string]: number;
+    }>;
+    fetchRates(as: 'DIVISOR'): Promise<{
+        [symbolPair: string]: number;
+    }>;
+    fetchRates(as: 'MULTIPLIER'): Promise<{
+        [symbolPair: string]: number;
+    }>;
+    fetchRates(as: 'PRICED'): Promise<{
+        [symbolPair: string]: {
+            [symbol: string]: number;
+        };
+    }>;
 }
 //# sourceMappingURL=wyre.d.ts.map

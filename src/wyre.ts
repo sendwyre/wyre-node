@@ -18,4 +18,12 @@ export default class WyreClient {
     const api = masquerade ? this.api.masqueradeAs(id) : this.api
     return Account.fetch(api, id)
   }
+
+  public async fetchRates(): Promise<{ [symbolPair: string]: number }>
+  public async fetchRates(as: 'DIVISOR'): Promise<{ [symbolPair: string]: number }>
+  public async fetchRates(as: 'MULTIPLIER'): Promise<{ [symbolPair: string]: number }>
+  public async fetchRates(as: 'PRICED'): Promise<{ [symbolPair: string]: { [symbol: string]: number } }>
+  public async fetchRates(as?: string): Promise<object> {
+    return this.api.get('rates', null, { qs: { as } })
+  }
 }

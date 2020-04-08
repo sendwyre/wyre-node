@@ -59,6 +59,13 @@ var WyreClient = (function () {
             });
         });
     };
+    WyreClient.prototype.fetchRates = function (as) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, this.api.get('rates', null, { qs: { as: as } })];
+            });
+        });
+    };
     return WyreClient;
 }());
 exports.default = WyreClient;
