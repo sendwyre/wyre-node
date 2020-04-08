@@ -109,6 +109,33 @@ var PaymentMethod = (function (_super) {
             });
         });
     };
+    PaymentMethod.fetch = function (api, id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        api.requireAuthed();
+                        return [4, api.get("paymentMethod/" + id, null, { version: '2' })];
+                    case 1:
+                        data = _a.sent();
+                        return [2, new PaymentMethod(data, api)];
+                }
+            });
+        });
+    };
+    PaymentMethod.prototype.delete = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.api.delete("paymentMethod/" + this.id, null, { version: '2' })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
     return PaymentMethod;
 }(Model_1.default));
 exports.default = PaymentMethod;

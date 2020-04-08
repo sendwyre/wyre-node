@@ -70,4 +70,15 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
     })
     return paymentMethods.map((paymentData) => new PaymentMethod(paymentData, api))
   }
+
+  public static async fetch(api: Api, id: string): Promise<PaymentMethod> {
+    api.requireAuthed()
+
+    const data = await api.get<IPaymentMethod>(`paymentMethod/${id}`, null, { version: '2' })
+    return new PaymentMethod(data, api)
+  }
+
+  public async delete() {
+    await this.api.delete(`paymentMethod/${this.id}`, null, { version: '2' })
+  }
 }

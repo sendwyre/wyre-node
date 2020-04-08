@@ -37,5 +37,7 @@ export default class PaymentMethod extends Model<PaymentMethod, IPaymentMethod> 
     static createACH(api: Api, publicToken: string): Promise<PaymentMethod>;
     static createWire(api: Api, params: IPaymentMethodWireCreateParams): Promise<PaymentMethod>;
     static fetchAll(api: Api): Promise<Array<PaymentMethod>>;
+    static fetch(api: Api, id: string): Promise<PaymentMethod>;
+    delete(): Promise<void>;
 }
 //# sourceMappingURL=PaymentMethod.d.ts.map
