@@ -20,10 +20,6 @@ var WyreClient = (function () {
     function WyreClient(config, masqueradeTarget) {
         this.config = config;
         this.masqueradeTarget = masqueradeTarget;
-        if (!config.secretKey)
-            throw new Error('config.secretKey is missing');
-        if (!config.apiKey)
-            throw new Error('config.apiKey is missing');
         this.config.options = this.config.options || {};
     }
     WyreClient.prototype.get = function (path, params, options) {
@@ -42,19 +38,24 @@ var WyreClient = (function () {
         return new WyreClient(this.config, target);
     };
     WyreClient.prototype.request = function (method, path, params, options) {
+        var _this = this;
         if (params === void 0) { params = {}; }
         if (options === void 0) { options = {}; }
-        if (!path)
-            throw "path required";
-        var requestOptions = this.buildRequestOptions(method, path, params, options);
         return new Promise(function (resolve, reject) {
+            if (!path) {
+                reject({ statusCode: 500 });
+            }
+            var requestOptions = _this.buildRequestOptions(method, path, params, options);
             request(requestOptions, function (err, res) {
-                if (err)
-                    throw err;
-                else if (res.statusCode >= 200 && res.statusCode < 300)
+                if (err) {
+                    reject({ statusCode: 500 });
+                }
+                else if (res.statusCode >= 200 && res.statusCode < 300) {
                     resolve(res.body || {});
-                else
+                }
+                else {
                     reject(res.body || { statusCode: res.statusCode });
+                }
             });
         });
     };

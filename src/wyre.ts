@@ -11,8 +11,8 @@ const WYRE_DEFAULT_API_FORMAT = "json"
 export class WyreClient {
 
     constructor(private config: any, private masqueradeTarget?: string) {
-        if(!config.secretKey) throw new Error('config.secretKey is missing');
-        if(!config.apiKey)  throw new Error('config.apiKey is missing');
+        // if(!config.secretKey) throw new Error('config.secretKey is missing');
+        // if(!config.apiKey)  throw new Error('config.apiKey is missing');
         this.config.options = this.config.options || {};
     }
 
@@ -43,19 +43,24 @@ export class WyreClient {
     }
 
     private request(method: string, path: string, params: any = {}, options: any = {}): Promise<any> {
-        if(!path)
-            throw "path required"
-
-        let requestOptions = this.buildRequestOptions(method, path, params, options)
-
         return new Promise((resolve, reject) => {
+
+            if (!path) {
+                reject({ statusCode: 500 })
+            }
+
+            let requestOptions = this.buildRequestOptions(method, path, params, options)
+
             request(requestOptions, (err, res) => {
-                if(err)
-                    throw err;
-                else if(res.statusCode >= 200 && res.statusCode < 300)
+                if (err) {
+                    reject({ statusCode: 500 })
+                }
+                else if (res.statusCode >= 200 && res.statusCode < 300) {
                     resolve(res.body || {})
-                else
+                }
+                else {
                     reject(res.body || { statusCode: res.statusCode })
+                }
             })
         })
     }

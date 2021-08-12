@@ -1,6 +1,7 @@
 {
-  "name": "@wyre/api",
-  "version": "1.0.4",
+  "name": "@beamnetwork/wyre-node-api",
+  "private": false,
+  "version": "2.0.2",
   "description": "Node.js client library for the Wyre API.",
   "main": "./dist/wyre.js",
   "scripts": {
@@ -8,9 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sendwyre/wyre-node.git"
+    "url": "https://github.com:BeamNetwork/wyre-node.git"
   },
-  "homepage": "https://github.com/sendwyre/wyre-node#readme",
+  "homepage": "https://github.com:BeamNetwork/wyre-node#readme",
   "keywords": [
     "wyre",
     "exchange",
@@ -22,7 +23,7 @@
   "author": "Wyre",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sendwyre/wyre-node/issues"
+    "url": "https://githgithub.com:BeamNetwork/wyre-node/issues"
   },
   "types": "./dist/wyre.d.ts",
   "dependencies": {
