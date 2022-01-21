@@ -26,7 +26,7 @@
   },
   "types": "./dist/wyre.d.ts",
   "dependencies": {
-    "es6-shim": "0.35.3",
+    "es6-shim": "0.35.6",
     "request": "2.88.0"
   },
   "devDependencies": {
